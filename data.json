@@ -1,0 +1,245 @@
+{
+  "requirements": [],
+  "candidates": [],
+  "vendors": [
+    {
+      "id": "mqyvapejgdxu",
+      "name": "Endeavour",
+      "type": "Mixed",
+      "fit": "Green",
+      "emp": true,
+      "notes": "Actively engaged",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejj01i",
+      "name": "CodersBrain",
+      "type": "Contract",
+      "fit": "Amber",
+      "emp": true,
+      "notes": "Contract-heavy",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejptm7",
+      "name": "NS Global Corporation",
+      "type": "Mixed",
+      "fit": "Green",
+      "emp": true,
+      "notes": "Actively engaged",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapej4jq6",
+      "name": "Supersourcing",
+      "type": "Mixed",
+      "fit": "Green",
+      "emp": true,
+      "notes": "Actively engaged",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejcq2p",
+      "name": "NR Consulting",
+      "type": "Contract",
+      "fit": "Green",
+      "emp": true,
+      "notes": "Actively engaged",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejla5r",
+      "name": "Nexthire",
+      "type": "Mixed",
+      "fit": "Amber",
+      "emp": true,
+      "notes": "No evident Salesforce capability",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapeju3vl",
+      "name": "Antal International",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "Strong mid-senior FTE search",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejnpa9",
+      "name": "Michael Page",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "Mid-senior FTE only",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejk3tt",
+      "name": "Careernet",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "Strong in tech FTE",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejfs55",
+      "name": "Cresendo",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "Tech & BFSI FTE",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejf60x",
+      "name": "CIEL HR Services",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "Strong IT FTE",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejuxtc",
+      "name": "Spectrum Talent",
+      "type": "Mixed",
+      "fit": "Green",
+      "emp": false,
+      "notes": "FTE + contract at scale",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejbyoa",
+      "name": "Manpower Group",
+      "type": "Mixed",
+      "fit": "Green",
+      "emp": false,
+      "notes": "FTE + contract",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejcuiy",
+      "name": "Adecco India",
+      "type": "Mixed",
+      "fit": "Green",
+      "emp": false,
+      "notes": "FTE + contract",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejuze7",
+      "name": "Pylon Management",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "Exec/mid-senior search",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejyb7q",
+      "name": "Hucon Solutions",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "Mid-tier IT FTE",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejh5bh",
+      "name": "TalentNiti",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "FTE boutique",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapej1hda",
+      "name": "Trustklub Consulting",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "FTE boutique",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejg7l7",
+      "name": "Top Hire",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "FTE search boutique",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejdxsw",
+      "name": "Unify Search",
+      "type": "FTE",
+      "fit": "Green",
+      "emp": false,
+      "notes": "FTE-focused search",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejlnw7",
+      "name": "Teamplus Staffing",
+      "type": "Contract",
+      "fit": "Pass",
+      "emp": false,
+      "notes": "Contract/temp — weak for FTE",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapej8tq5",
+      "name": "Genetic Callnet",
+      "type": "Contract",
+      "fit": "Pass",
+      "emp": false,
+      "notes": "Contract — weak for FTE",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejsge3",
+      "name": "Shell Infotech",
+      "type": "Contract",
+      "fit": "Pass",
+      "emp": false,
+      "notes": "Contract-heavy",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejjf26",
+      "name": "GNK E Services",
+      "type": "Contract",
+      "fit": "Pass",
+      "emp": false,
+      "notes": "Contract/temp-heavy",
+      "contacts": []
+    },
+    {
+      "id": "mqyvapejs30w",
+      "name": "Trispoke Managed Services",
+      "type": "Contract",
+      "fit": "Amber",
+      "emp": false,
+      "notes": "Contract/staffing",
+      "contacts": []
+    }
+  ],
+  "ctc": [],
+  "baselines": {},
+  "settings": {
+    "fx": 93
+  },
+  "quote": {
+    "client": "",
+    "title": "",
+    "view": "internal",
+    "basis": "level",
+    "flat": 0.6,
+    "catMargins": {},
+    "lines": []
+  }
+}

@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netscribes — Staffing Workspace</title>
+<style>
+  :root{
+    --navy:#1B3A6B;--navy-d:#142d54;--teal:#1D9E75;--teal-d:#178a64;--red:#C0392B;
+    --ink:#1d2433;--muted:#6b7588;--line:#e3e7ef;--bg:#f5f7fb;--card:#fff;
+    --amber:#E0A800;--green:#1D9E75;--grey:#9aa3b2;--soft:#eef1f7;--softteal:#e6f6ef;
+    --shadow:0 1px 2px rgba(20,45,84,.06),0 6px 20px rgba(20,45,84,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+  button{font-family:inherit;cursor:pointer;border:none;border-radius:7px;font-size:14px}
+  input,select,textarea{font-family:inherit;font-size:14px;border:1px solid var(--line);border-radius:7px;padding:8px 10px;width:100%;background:#fff;color:var(--ink)}
+  input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
+  label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin:0 0 4px}
+  h2{font-size:18px;color:var(--navy);margin:0 0 3px} h3{margin:0;font-size:15px;color:var(--navy)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1;min-width:130px}
+  .muted{color:var(--muted)} .hint{font-size:12.5px;color:var(--muted)}
+  .sub{font-size:13px;color:var(--muted);margin:0 0 14px}
+
+  .appbar{background:var(--navy);color:#fff;padding:13px 22px;display:flex;align-items:center;gap:16px;position:relative}
+  .appbar::after{content:"";position:absolute;top:0;right:0;width:60px;height:100%;background:var(--red);clip-path:polygon(100% 0,100% 100%,0 0)}
+  .brand b{font-size:18px} .brand span{display:block;font-size:11.5px;color:#b9c6de}
+  .appbar .tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;z-index:1}
+  .btn{background:#fff;color:var(--navy);padding:8px 13px;font-weight:600}
+  .btn.ghost{background:transparent;color:#fff;border:1px solid #4a6699}
+  .btn.teal{background:var(--teal);color:#fff}.btn.teal:hover{background:var(--teal-d)}
+  .btn.soft{background:var(--soft);color:var(--navy)}
+  .btn.sm{padding:6px 11px;font-size:13px}.btn.danger{background:#fff;color:var(--red)}
+  .btn:hover{filter:brightness(.98)}
+
+  nav.tabs{background:#fff;border-bottom:1px solid var(--line);padding:0 14px;display:flex;gap:2px;overflow-x:auto;position:sticky;top:0;z-index:20}
+  nav.tabs button{background:none;color:var(--muted);padding:13px 15px;font-weight:600;border-bottom:3px solid transparent;border-radius:0;white-space:nowrap}
+  nav.tabs button.on{color:var(--navy);border-bottom-color:var(--teal)}
+  nav.tabs button:hover{color:var(--navy)}
+
+  main{max-width:1240px;margin:0 auto;padding:20px}
+  section.tab{display:none} section.tab.on{display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:16px}
+  .card.pad0{padding:0;overflow:hidden}
+  .chd{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line)}
+  .chd .sp{margin-left:auto}
+  .cbd{padding:14px 16px}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px;margin-bottom:16px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;box-shadow:var(--shadow)}
+  .kpi.accent{border-left:4px solid var(--teal)}
+  .kpi .n{font-size:25px;font-weight:700;color:var(--navy);line-height:1}
+  .kpi .l{font-size:11.5px;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:.04em}
+
+  /* stepper */
+  .stepper{display:flex;gap:0;flex-wrap:wrap;margin:6px 0 4px}
+  .step{flex:1;min-width:120px;position:relative;padding:10px 12px 10px 30px;background:var(--soft);margin-right:4px;border-radius:7px;font-size:13px}
+  .step b{color:var(--navy)} .step span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+  .step .num{position:absolute;left:9px;top:11px;width:18px;height:18px;border-radius:50%;background:var(--teal);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding:8px;border-bottom:2px solid var(--line);position:sticky}
+  td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+  tr:hover td{background:#fafbfe}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .catrow td{background:var(--softteal);color:var(--navy);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+
+  .pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;white-space:nowrap}
+  .s-Open{background:var(--softteal);color:var(--teal-d)}.s-Hold{background:#fdf3d9;color:#9c6500}
+  .s-Filled{background:var(--soft);color:var(--navy)}.s-Cancelled{background:#f1f1f3;color:var(--muted)}
+  .tag{font-size:11px;background:var(--soft);color:var(--navy);padding:2px 8px;border-radius:5px}
+  .tg-FTE{background:var(--softteal);color:var(--teal-d)}.tg-Contract{background:#fdf3d9;color:#9c6500}.tg-Mixed{background:var(--soft);color:var(--navy)}
+  .cnt{font-size:12px;color:var(--muted);background:var(--soft);padding:2px 9px;border-radius:20px}
+
+  .req{border:1px solid var(--line);border-left:4px solid var(--grey);border-radius:9px;padding:11px 13px;margin-bottom:9px;cursor:pointer;transition:.12s}
+  .req:hover{border-color:var(--teal)}.req.sel{box-shadow:0 0 0 2px rgba(29,158,117,.25);border-color:var(--teal)}
+  .req.p-High{border-left-color:var(--red)}.req.p-Medium{border-left-color:var(--amber)}.req.p-Low{border-left-color:var(--grey)}
+  .req .t{display:flex;align-items:center;gap:8px}.req .t b{font-size:15px}
+  .req .meta{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .rail{display:flex;height:6px;border-radius:5px;overflow:hidden;background:var(--soft);margin-top:8px}
+  .rail i{flex:1}.r-New{background:#cfd6e4}.r-Screened{background:#9fc7e8}.r-Submitted{background:#5aa9e6}
+  .r-Interview{background:#1D9E75}.r-Offer{background:#13855f}.r-Joined{background:#0c5e43}.r-Rejected{background:#e7b4ac}
+  .flag{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .f-Green{background:var(--green)}.f-Amber{background:var(--amber)}.f-Pass{background:var(--grey)}
+  .stage{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:var(--soft);color:var(--navy)}
+
+  /* margin slider control */
+  .mctl{display:flex;align-items:center;gap:10px;padding:7px 0}
+  .mctl label{margin:0;min-width:140px;color:var(--ink);font-weight:600}
+  .mctl input[type=range]{flex:1;accent-color:var(--teal);min-width:120px}
+  .mval{min-width:48px;text-align:right;font-weight:700;color:var(--teal-d);font-variant-numeric:tabular-nums}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{background:#fff;color:var(--muted);padding:7px 13px;border-radius:0;font-weight:600}
+  .seg button.on{background:var(--navy);color:#fff}
+
+  .empty{text-align:center;color:var(--muted);padding:30px 16px}.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
+  .note{background:var(--softteal);border:1px solid #c9e6da;border-radius:8px;padding:10px 12px;font-size:13px;color:#15543e}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+  .layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}@media(max-width:920px){.layout{grid-template-columns:1fr}}
+
+  .scrim{position:fixed;inset:0;background:rgba(20,45,84,.45);display:none;align-items:flex-start;justify-content:center;padding:24px;z-index:60;overflow:auto}
+  .scrim.on{display:flex}
+  .modal{background:#fff;border-radius:12px;width:100%;max-width:620px;box-shadow:0 20px 60px rgba(20,45,84,.3)}
+  .modal.wide{max-width:820px}
+  .mhd{display:flex;align-items:center;padding:15px 18px;border-bottom:1px solid var(--line)}
+  .mhd .x{margin-left:auto;background:var(--soft);color:var(--muted);width:30px;height:30px;border-radius:7px;font-size:17px}
+  .mbd{padding:18px;display:flex;flex-direction:column;gap:12px;max-height:74vh;overflow:auto}
+  .mft{padding:13px 18px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end}
+  .promptbox{white-space:pre-wrap;background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:14px;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.5;max-height:50vh;overflow:auto}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:10px 18px;border-radius:8px;opacity:0;transition:.25s;z-index:99}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  .login{position:fixed;inset:0;background:linear-gradient(135deg,#142d54,#1B3A6B);display:flex;align-items:center;justify-content:center;z-index:200}
+  .login .box{background:#fff;border-radius:14px;padding:30px;width:340px;box-shadow:0 30px 80px rgba(0,0,0,.35);position:relative}
+  .login .box::after{content:"";position:absolute;top:0;right:0;width:46px;height:46px;background:var(--red);clip-path:polygon(100% 0,100% 100%,0 0);border-radius:0 14px 0 0}
+  .login h1{color:#1B3A6B;font-size:20px;margin:0 0 2px}.login p{color:#6b7588;font-size:13px;margin:0 0 18px}
+  .login .field{margin-bottom:12px}.login .err{color:#C0392B;font-size:13px;min-height:18px;margin-top:6px}
+  .hidden{display:none!important}
+  .contact-line{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}
+  .contact-line a{color:var(--teal-d);font-weight:600;text-decoration:none}.contact-line a:hover{text-decoration:underline}
+  .badge{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:20px;background:var(--softteal);color:var(--teal-d)}
+  .baseline{color:var(--teal-d);font-weight:700}
+  .caret{display:inline-block;width:12px;color:var(--teal-d);font-size:11px}
+</style>
+</head>
+<body>
+<div class="login" id="login">
+  <div class="box">
+    <h1>NS Tech Staffing</h1>
+    <p>Sign in to continue</p>
+    <div class="field"><label>Email</label><input id="lg_user" autocomplete="username" placeholder="name@netscribes.com"></div>
+    <div class="field"><label>Password</label><input id="lg_pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn teal" style="width:100%;padding:11px" onclick="doLogin()">Sign in</button>
+    <div class="err" id="lg_err"></div>
+  </div>
+</div>
+
+<header class="appbar">
+  <div class="brand"><b>NS Tech Staffing</b><span>Rate cards · requirements · vendors · cost baselines — internal staffing workspace</span></div>
+  <div class="tools">
+    <button class="btn ghost sm" onclick="syncRepo()" title="Pull data.json from GitHub (replaces local)">Sync from repo</button>
+    <button class="btn teal sm" onclick="pushToGitHub()" title="Commit current data.json to GitHub">Push to GitHub</button>
+    <button class="btn ghost sm" onclick="openSettings()">Settings</button>
+    <button class="btn ghost sm" onclick="importJSON()">Import</button>
+    <button class="btn sm" onclick="exportJSON()">Save data</button>
+    <button class="btn ghost sm" onclick="logout()">Sign out</button>
+  </div>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button data-t="start" class="on" onclick="tab('start')">Start here</button>
+  <button data-t="rate" onclick="tab('rate')">Rate Card</button>
+  <button data-t="ctc" onclick="tab('ctc')">CTC &amp; Baselines</button>
+  <button data-t="req" onclick="tab('req')">Requirements</button>
+  <button data-t="quote" onclick="tab('quote')">Quote Builder</button>
+  <button data-t="vendors" onclick="tab('vendors')">Vendors</button>
+  <button data-t="prompts" onclick="tab('prompts')">Prompts</button>
+</nav>
+
+<main>
+  <!-- START -->
+  <section class="tab on" id="t-start">
+    <div class="card">
+      <h2>This is the home base for staff-augmentation pricing and sourcing</h2>
+      <p class="sub">Everything we've built lives here. Hand this file to anyone on the team — it explains itself and needs no login or internet.</p>
+      <div class="stepper">
+        <div class="step"><span class="num">1</span><b>Intake</b><span>Capture the requirement: role, level, location, type</span></div>
+        <div class="step"><span class="num">2</span><b>Scope &amp; rate card</b><span>Build a quote — cost internally, price for the client</span></div>
+        <div class="step"><span class="num">3</span><b>Source</b><span>Map vendors to the requirement (FTE vs contract)</span></div>
+        <div class="step"><span class="num">4</span><b>Screen &amp; triage</b><span>Green / amber / pass; flag inflation &amp; CV-factory</span></div>
+        <div class="step"><span class="num">5</span><b>Submit</b><span>Anonymized profiles, real org names kept</span></div>
+        <div class="step"><span class="num">6</span><b>Interview &rarr; Offer &rarr; Joined</b><span>Track to close</span></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>How pricing works here</h3>
+        <p class="hint" style="margin:8px 0 0">Rate = Cost &divide; (1 &minus; Margin). We share <b>cost</b> internally so the team can choose a price; we share the resulting <b>rate card (price)</b> with the client to convey scope. The Quote Builder does both from one screen — flip the Internal / Client toggle.</p>
+        <p class="hint">Anchors: generic L1&ndash;L3 land $3,000&ndash;$6,000/mo; PM ~$8,000. Niche skills carry a modest premium (within reason).</p>
+      </div>
+      <div class="card">
+        <h3>Principles we work to</h3>
+        <ul class="hint" style="margin:8px 0 0;padding-left:18px;line-height:1.7">
+          <li>Quality of experience over years. Pressure-test AMS/agentic claims.</li>
+          <li>Triage every profile green / amber / pass before it goes to a client.</li>
+          <li>Flag resume inflation, name/location/education gaps, and CV-factory bullet patterns.</li>
+          <li>Format B keeps the client name confidential; anonymized profiles remove only the candidate's name and keep real org names.</li>
+          <li>FTE mandates need FTE-capable agencies — contract-heavy vendors are weak fits.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <h3>What each tab does</h3>
+      <div class="row" style="margin-top:10px">
+        <div><b>Rate Card</b><p class="hint">The full role catalog with cost and price. Set a global margin and flip cost/price.</p><button class="btn soft sm" onclick="tab('rate')">Open Rate Card</button></div>
+        <div><b>CTC &amp; Baselines</b><p class="hint">Drop in vendor CTCs to average cost by position and vendor, and lock validated baselines.</p><button class="btn soft sm" onclick="tab('ctc')">Open CTC &amp; Baselines</button></div>
+        <div><b>Requirements</b><p class="hint">Log open roles and their candidate pipeline. Slicers keep it clean.</p><button class="btn soft sm" onclick="tab('req')">Open Requirements</button></div>
+        <div><b>Quote Builder</b><p class="hint">Make a rate card for one requirement, adjusting margins by role or category.</p><button class="btn soft sm" onclick="tab('quote')">Open Quote Builder</button></div>
+        <div><b>Vendors</b><p class="hint">The vendor roster, tagged FTE / contract, mapped to your sourcing.</p><button class="btn soft sm" onclick="tab('vendors')">Open Vendors</button></div>
+        <div><b>Prompts</b><p class="hint">Ready prompts for JDs, vendor emails, anonymized profiles, screening notes — paste into Claude.</p><button class="btn soft sm" onclick="tab('prompts')">Open Prompts</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RATE CARD -->
+  <section class="tab" id="t-rate">
+    <h2>Rate Card</h2>
+    <p class="sub">The full catalog. Cost is modelled; price falls out of the margin. Use this as the reference; build client-specific versions in the Quote Builder.</p>
+    <div class="card">
+      <div class="row" style="align-items:flex-end">
+        <div style="max-width:230px"><label>View</label>
+          <div class="seg"><button id="rcInt" class="on" onclick="setRcView('internal')">Internal (cost + price)</button><button id="rcCli" onclick="setRcView('client')">Client (price)</button></div>
+        </div>
+        <div style="max-width:230px"><label>Category</label><select id="rcCat" onchange="renderRate()"></select></div>
+        <div style="max-width:300px"><label>Search role</label><input id="rcSearch" oninput="renderRate()" placeholder="e.g. Workday, AI, SAP"></div>
+        <div class="mctl" style="flex:1;min-width:240px"><label>Global margin</label><input type="range" min="30" max="75" id="rcMargin" value="60" oninput="renderRate()"><span class="mval" id="rcMarginV">60%</span></div>
+      </div>
+    </div>
+    <div class="card pad0"><div style="overflow:auto;max-height:62vh"><table id="rcTable"></table></div></div>
+  </section>
+
+  <!-- CTC & BASELINES -->
+  <section class="tab" id="t-ctc">
+    <h2>CTC &amp; Baselines</h2>
+    <p class="sub">Drop in the candidate CTCs vendors send you. The tool averages them by position and by vendor, converts rupees to dollars on your FX assumption, and lets you lock a validated cost baseline that the rate card and quotes then use.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Add CTC observations</h3>
+        <div class="row" style="align-items:flex-end;margin-top:8px">
+          <div style="flex:2"><label>Position</label><select id="ct_role"></select></div>
+          <div><label>Level</label><select id="ct_level"></select></div>
+        </div>
+        <div class="row" style="align-items:flex-end">
+          <div><label>Vendor</label><input id="ct_vendor" list="vendorList2"><datalist id="vendorList2"></datalist></div>
+          <div style="max-width:110px"><label>Amount</label><input id="ct_amt" type="number" placeholder="e.g. 24"></div>
+          <div><label>Unit</label><select id="ct_cur"><option value="inr_lpa">INR LPA</option><option value="inr_mo">INR /mo</option><option value="usd_mo">USD /mo</option><option value="usd_yr">USD /yr</option></select></div>
+          <div style="flex:0"><label>&nbsp;</label><button class="btn teal sm" onclick="addCtc()">Add</button></div>
+        </div>
+        <div style="margin-top:12px"><label>Or paste rows (Position [tab] Level [tab] Vendor [tab] Amount [tab] Unit)</label>
+          <textarea id="ct_bulk" rows="3" placeholder="AI / ML Engineer	L3	NR Consulting	26	inr_lpa"></textarea>
+          <button class="btn soft sm" style="margin-top:8px" onclick="bulkCtc()">Import pasted rows</button></div>
+      </div>
+      <div class="card">
+        <h3>Settings</h3>
+        <div class="mctl"><label>USD / INR FX rate</label><input type="number" id="ct_fx" style="max-width:120px" onchange="setFx(this.value)"><span class="hint">rupees per dollar</span></div>
+        <p class="hint">INR LPA &rarr; USD/mo = amount &times; 100,000 &divide; FX &divide; 12. Change the rate any time; everything reprices.</p>
+        <h3 style="margin-top:14px">By vendor</h3>
+        <div style="overflow:auto;max-height:24vh"><table id="ctVendorTable"></table></div>
+      </div>
+    </div>
+    <div class="card pad0">
+      <div class="chd"><h3>By position — observed cost vs model</h3><span class="sp hint" id="ctCount"></span></div>
+      <div style="overflow:auto;max-height:46vh"><table id="ctPosTable"></table></div>
+    </div>
+    <div class="card pad0">
+      <div class="chd"><h3>Observations</h3><span class="sp"></span><button class="btn soft sm" onclick="exportCtc()">Export CSV</button></div>
+      <div style="overflow:auto;max-height:34vh"><table id="ctRawTable"></table></div>
+    </div>
+  </section>
+
+  <!-- REQUIREMENTS -->
+  <section class="tab" id="t-req">
+    <h2>Requirements</h2>
+    <p class="sub">Light by design — log a role in seconds, add candidates as they come.</p>
+    <div class="kpis" id="reqKpis"></div>
+    <div class="card">
+      <div class="row" style="align-items:flex-end">
+        <div><label>Client / engagement</label><select id="f_client" onchange="renderReq()"></select></div>
+        <div><label>Position</label><select id="f_position" onchange="renderReq()"></select></div>
+        <div><label>Status</label><select id="f_status" onchange="renderReq()"></select></div>
+        <div><label>Priority</label><select id="f_priority" onchange="renderReq()"></select></div>
+        <div style="flex:0"><label>&nbsp;</label><button class="btn soft sm" onclick="clearReqFilters()">Reset</button></div>
+        <div style="flex:0"><label>&nbsp;</label><button class="btn teal sm" onclick="openReq()">+ New</button></div>
+      </div>
+    </div>
+    <div class="layout">
+      <div class="card pad0"><div class="chd"><h3>Open roles</h3><span class="cnt sp" id="reqCount"></span></div><div class="cbd" id="reqList"></div></div>
+      <div class="card pad0"><div class="chd"><h3 id="detTitle">Candidates</h3><span class="sp"></span>
+        <button class="btn soft sm" id="quoteFromReq" style="display:none" onclick="quoteFromReq()">Build quote</button>
+        <button class="btn teal sm" id="addCandBtn" style="display:none" onclick="openCand()">+ Candidate</button></div>
+        <div class="cbd" id="detail"></div></div>
+    </div>
+  </section>
+
+  <!-- QUOTE BUILDER -->
+  <section class="tab" id="t-quote">
+    <h2>Quote Builder</h2>
+    <p class="sub">Build a rate card for one requirement. Set cost once; dial margins globally, by category, or per line. Share the client view (price) externally and the internal view (cost + margin) with your team.</p>
+    <div class="card">
+      <div class="row" style="align-items:flex-end">
+        <div><label>Client / engagement</label><input id="qClient" oninput="saveQuote()" placeholder="e.g. Cummins Power Solutions"></div>
+        <div><label>Quote title</label><input id="qTitle" oninput="saveQuote()" placeholder="e.g. AI delivery pod — Q3"></div>
+        <div style="max-width:240px"><label>View</label>
+          <div class="seg"><button id="qInt" class="on" onclick="setQView('internal')">Internal</button><button id="qCli" onclick="setQView('client')">Client</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Margin controls</h3>
+        <div class="mctl"><label>Basis</label>
+          <select id="qBasis" onchange="renderQuote()" style="flex:1"><option value="level">Level defaults (70/67/60/58%)</option><option value="flat">Flat margin %</option></select></div>
+        <div class="mctl" id="qFlatWrap" style="display:none"><label>Flat margin</label><input type="range" min="30" max="75" id="qFlat" value="60" oninput="renderQuote()"><span class="mval" id="qFlatV">60%</span></div>
+        <div id="qCatMargins"></div>
+        <p class="hint" style="margin-top:8px">Per-line override beats category, which beats the basis. Set a line override in the table.</p>
+      </div>
+      <div class="card">
+        <h3>Add a role</h3>
+        <div class="row" style="align-items:flex-end">
+          <div style="flex:2"><label>Role</label><select id="qRole" onchange="syncLevels()"></select></div>
+          <div><label>Level</label><select id="qLevel"></select></div>
+          <div style="max-width:80px"><label>Qty</label><input id="qQty" type="number" min="1" value="1"></div>
+          <div style="max-width:90px"><label>Months</label><input id="qMonths" type="number" min="1" value="12"></div>
+          <div style="flex:0"><label>&nbsp;</label><button class="btn teal sm" onclick="addLine()">Add</button></div>
+        </div>
+        <p class="hint" style="margin-top:8px">Months drives the contract-value total only; monthly rate is what you share on the rate card.</p>
+      </div>
+    </div>
+    <div class="card pad0">
+      <div class="chd"><h3>Quote lines</h3><span class="sp"></span>
+        <button class="btn soft sm" onclick="printQuote()">Print client rate card</button>
+        <button class="btn soft sm" onclick="exportQuote('client')">Client CSV</button>
+        <button class="btn soft sm" onclick="exportQuote('internal')">Internal CSV</button>
+        <button class="btn teal sm" onclick="quotePrompt()">Rate-card doc prompt</button>
+      </div>
+      <div style="overflow:auto"><table id="qTable"></table></div>
+      <div id="qTotals" class="cbd" style="border-top:1px solid var(--line)"></div>
+    </div>
+  </section>
+
+  <!-- VENDORS -->
+  <section class="tab" id="t-vendors">
+    <h2>Vendors</h2>
+    <p class="sub">The roster we've assessed and empanelled. FTE mandates need FTE-capable agencies; contract-heavy vendors are weak fits for permanent roles. Store contacts so you can email a mandate in one click.</p>
+    <div class="card">
+      <div class="row" style="align-items:flex-end">
+        <div style="max-width:200px"><label>Type</label><select id="vFilter" onchange="renderVendors()"><option value="">All types</option><option>FTE</option><option>Contract</option><option>Mixed</option></select></div>
+        <div style="max-width:200px"><label>Show</label><select id="vEmp" onchange="renderVendors()"><option value="">All vendors</option><option value="1">Empanelled only</option></select></div>
+        <div style="flex:1"></div>
+        <div style="flex:0"><label>&nbsp;</label><button class="btn soft sm" onclick="seedVendors(true)">Reload roster</button></div>
+        <div style="flex:0"><label>&nbsp;</label><button class="btn teal sm" onclick="openVendor()">+ Vendor</button></div>
+      </div>
+    </div>
+    <div class="card pad0"><div style="overflow:auto"><table id="vTable"></table></div></div>
+  </section>
+
+  <!-- PROMPTS -->
+  <section class="tab" id="t-prompts">
+    <h2>Prompts</h2>
+    <p class="sub">The recurring tasks, as ready prompts. Where a prompt needs role detail, pick a requirement first; otherwise fill the brackets. Paste into your Claude project chat.</p>
+    <div class="card">
+      <div class="row" style="max-width:520px;align-items:flex-end">
+        <div><label>Use details from requirement (optional)</label><select id="pReq"></select></div>
+      </div>
+    </div>
+    <div class="grid2" id="promptCards"></div>
+  </section>
+</main>
+
+<!-- modals -->
+<div class="scrim" id="reqScrim"><div class="modal"><div class="mhd"><h3 id="reqMT">New requirement</h3><button class="x" onclick="close_('reqScrim')">&times;</button></div>
+  <div class="mbd">
+    <div class="row"><div><label>Position *</label><input id="r_position" list="roleList" placeholder="start typing…"><datalist id="roleList"></datalist></div>
+      <div><label>Client / engagement</label><input id="r_client"></div></div>
+    <div class="row"><div><label>Level</label><select id="r_level"></select></div><div><label>Experience</label><input id="r_exp" placeholder="e.g. 6-9 yrs"></div><div><label>Openings</label><input id="r_openings" type="number" min="1" value="1"></div></div>
+    <div class="row"><div><label>Location</label><input id="r_location"></div><div><label>Type</label><select id="r_empType"><option>Contract</option><option>FTE</option><option>Managed team</option><option>Retainer</option></select></div></div>
+    <div class="row"><div><label>Priority</label><select id="r_priority"><option>High</option><option>Medium</option><option>Low</option></select></div>
+      <div><label>Status</label><select id="r_status"><option>Open</option><option>Hold</option><option>Filled</option><option>Cancelled</option></select></div>
+      <div><label>JD format</label><select id="r_jd"><option value="B">B — Agency mandate</option><option value="A">A — Branded JD</option></select></div></div>
+    <div><label>Must-have skills</label><textarea id="r_skills" rows="2" placeholder="comma separated"></textarea></div>
+    <div><label>Notes</label><textarea id="r_notes" rows="2"></textarea></div>
+  </div>
+  <div class="mft"><button class="btn danger sm" id="reqDel" style="margin-right:auto;display:none" onclick="delReq()">Delete</button>
+    <button class="btn soft sm" onclick="close_('reqScrim')">Cancel</button><button class="btn teal" onclick="saveReq()">Save</button></div></div></div>
+
+<div class="scrim" id="candScrim"><div class="modal"><div class="mhd"><h3 id="candMT">Add candidate</h3><button class="x" onclick="close_('candScrim')">&times;</button></div>
+  <div class="mbd">
+    <div class="row"><div><label>Name *</label><input id="c_name"></div><div><label>Source / vendor</label><input id="c_vendor" list="vendorList"><datalist id="vendorList"></datalist></div></div>
+    <div class="row"><div><label>Experience (yrs)</label><input id="c_exp"></div><div><label>Current CTC</label><input id="c_cur"></div><div><label>Expected CTC</label><input id="c_ectc"></div></div>
+    <div class="row"><div><label>Notice</label><input id="c_notice"></div><div><label>Location</label><input id="c_loc"></div></div>
+    <div class="row"><div><label>Stage</label><select id="c_stage"><option>New</option><option>Screened</option><option>Submitted</option><option>Interview</option><option>Offer</option><option>Joined</option><option>Rejected</option></select></div>
+      <div><label>Triage</label><select id="c_flag"><option>Green</option><option>Amber</option><option>Pass</option></select></div></div>
+    <div><label>Notes</label><textarea id="c_notes" rows="2"></textarea></div>
+  </div>
+  <div class="mft"><button class="btn danger sm" id="candDel" style="margin-right:auto;display:none" onclick="delCand()">Delete</button>
+    <button class="btn soft sm" onclick="close_('candScrim')">Cancel</button><button class="btn teal" onclick="saveCand()">Save</button></div></div></div>
+
+<div class="scrim" id="vendorScrim"><div class="modal"><div class="mhd"><h3 id="venMT">Vendor</h3><button class="x" onclick="close_('vendorScrim')">&times;</button></div>
+  <div class="mbd"><div class="row"><div><label>Name *</label><input id="v_name"></div><div><label>Type</label><select id="v_type"><option>FTE</option><option>Contract</option><option>Mixed</option></select></div></div>
+    <div class="row"><div><label>Fit</label><select id="v_fit"><option>Green</option><option>Amber</option><option>Pass</option></select></div><div><label>Empanelled</label><select id="v_emp"><option value="1">Yes</option><option value="">No</option></select></div></div>
+    <div><label>Contacts</label><div id="v_contacts"></div><button class="btn soft sm" style="margin-top:6px" onclick="addContactRow()">+ Add contact</button></div>
+    <div><label>Notes</label><textarea id="v_notes" rows="2"></textarea></div></div>
+  <div class="mft"><button class="btn danger sm" id="venDel" style="margin-right:auto;display:none" onclick="delVendor()">Delete</button>
+    <button class="btn soft sm" onclick="close_('vendorScrim')">Cancel</button><button class="btn teal" onclick="saveVendor()">Save</button></div></div></div>
+
+<div class="scrim" id="vmailScrim"><div class="modal"><div class="mhd"><h3 id="vmailT">Email a mandate</h3><button class="x" onclick="close_('vmailScrim')">&times;</button></div>
+  <div class="mbd">
+    <div><label>Use details from requirement (optional)</label><select id="vmailReq" onchange="renderVmail()"></select></div>
+    <div class="note">Click a contact to open a pre-filled email, or copy the AI prompt for a polished draft.</div>
+    <div id="vmailContacts"></div>
+  </div>
+  <div class="mft"><button class="btn soft sm" onclick="copyPrompt()">Copy AI prompt</button><button class="btn teal" onclick="close_('vmailScrim')">Done</button></div></div></div>
+
+<div class="scrim" id="settingsScrim"><div class="modal"><div class="mhd"><h3>Settings</h3><button class="x" onclick="close_('settingsScrim')">&times;</button></div>
+  <div class="mbd">
+    <div class="mctl"><label>USD / INR FX rate</label><input type="number" id="set_fx" style="max-width:120px"><span class="hint">rupees per dollar (default 90)</span></div>
+    <hr style="border:none;border-top:1px solid var(--line);margin:4px 0">
+    <div>
+      <label>GitHub personal access token</label>
+      <input type="password" id="set_ghtoken" placeholder="github_pat_…" autocomplete="off" style="font-family:ui-monospace,monospace;font-size:13px">
+      <p class="hint" style="margin-top:4px">Fine-grained token with <b>Contents: Read &amp; Write</b> on <code>ns-adiraghavan/techstaffing</code>. Stored in this browser only — never written into data.json or sent anywhere except api.github.com.</p>
+    </div>
+    <div class="note"><b>GitHub sync.</b> Save your token here, then use <b>Push to GitHub</b> in the toolbar to commit <code>data.json</code> directly to the repo. <b>Sync from repo</b> pulls the latest committed version. Both work without hosting — straight GitHub API calls from this browser.</div>
+    <div class="note" style="background:#fdf3d9;border-color:#e8d59a;color:#7a5a00"><b>About the login.</b> Convenience gate only — credential is in the source. Keep the repo private and rotate the PAT if it is ever exposed.</div>
+  </div>
+  <div class="mft"><button class="btn soft sm" onclick="close_('settingsScrim')">Cancel</button><button class="btn teal" onclick="saveSettings()">Save</button></div></div></div>
+
+<div class="scrim" id="promptScrim"><div class="modal wide"><div class="mhd"><h3 id="promptTitle">Prompt</h3><button class="x" onclick="close_('promptScrim')">&times;</button></div>
+  <div class="mbd"><div class="note" id="promptNote"></div><div class="promptbox" id="promptText"></div></div>
+  <div class="mft"><button class="btn soft sm" id="mailBtn" style="margin-right:auto;display:none" onclick="openMail()">Draft email (mailto)</button><button class="btn teal" onclick="copyPrompt()">Copy</button></div></div></div>
+
+<input type="file" id="fileIn" accept="application/json" style="display:none">
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== cost model (mirrors the Excel rate card) ===== */
+const BASE={L1:900,L2:1500,L3:2400};
+const LEVELMARGIN={L1:.70,L2:.67,L3:.60,Lead:.58,Senior:.58,Architect:.58,Program:.58,PM:.58,Advisory:.58};
+const LOW=new Set(["Annotation / Data QC Analyst"]);
+const MID=new Set(["API / Integration Engineer","Data Engineer","Data Analyst","BI / Data Visualization (Power BI)","DevOps / Cloud Engineer","Platform Engineer","Site Reliability Engineer (SRE)","Cloud Migration Engineer","QA Automation Engineer (Selenium / Cypress / Playwright)","Technical Business Analyst","UX Researcher","Product Designer","Design System Designer","RPA Developer (UiPath / Automation Anywhere)","Conversational AI / NLP Engineer","Document AI / IDP Engineer (OCR + NLP)","MLOps Engineer","Salesforce Administrator","SAP ABAP Developer","SAP Basis / Technical Consultant","Workday Reporting / Technical Analyst","ERP Functional Consultant (HRMS / Finance / Procurement)","Data Acquisition / Web Scraping Engineer","Pricing / Competitive Intelligence Analyst"]);
+const NICHE=new Set(["Data Scientist","AI / ML Engineer","Agentic AI Engineer (LangGraph / CrewAI)","GenAI Engineer (LLM / RAG)","Computer Vision Engineer","Security Engineer","DevSecOps Engineer","Salesforce Developer (Apex / LWC)","Salesforce Functional Consultant","SAP Functional Consultant (FICO / MM / SD)","SAP S/4HANA Consultant","SAP SuccessFactors Consultant","Workday HCM Consultant","Workday Financials Consultant","Workday Integration Consultant (Studio / PECI)"]);
+const tier=r=>LOW.has(r)?.90:NICHE.has(r)?1.10:MID.has(r)?1.05:1.00;
+
+const IC=[["Engineering","Backend Developer (Java / Python / Node)"],["Engineering","Frontend Developer (React / Angular)"],["Engineering","Full-Stack Developer"],["Engineering","Mobile Developer (iOS / Android)"],["Engineering","API / Integration Engineer"],["Data & AI","Data Engineer"],["Data & AI","Data Analyst"],["Data & AI","BI / Data Visualization (Power BI)"],["Data & AI","Data Scientist"],["Data & AI","AI / ML Engineer"],["Intelligent Automation & AI","RPA Developer (UiPath / Automation Anywhere)"],["Intelligent Automation & AI","Agentic AI Engineer (LangGraph / CrewAI)"],["Intelligent Automation & AI","GenAI Engineer (LLM / RAG)"],["Intelligent Automation & AI","Conversational AI / NLP Engineer"],["Intelligent Automation & AI","Document AI / IDP Engineer (OCR + NLP)"],["Intelligent Automation & AI","Computer Vision Engineer"],["Intelligent Automation & AI","MLOps Engineer"],["Cloud & Platform","DevOps / Cloud Engineer"],["Cloud & Platform","DevSecOps Engineer"],["Cloud & Platform","Platform Engineer"],["Cloud & Platform","Site Reliability Engineer (SRE)"],["Cloud & Platform","Cloud Migration Engineer"],["Security","Security Engineer"],["Quality","QA / Test Engineer"],["Quality","QA Automation Engineer (Selenium / Cypress / Playwright)"],["Salesforce","Salesforce Administrator"],["Salesforce","Salesforce Developer (Apex / LWC)"],["Salesforce","Salesforce Functional Consultant"],["SAP","SAP Functional Consultant (FICO / MM / SD)"],["SAP","SAP ABAP Developer"],["SAP","SAP Basis / Technical Consultant"],["SAP","SAP S/4HANA Consultant"],["SAP","SAP SuccessFactors Consultant"],["Workday","Workday HCM Consultant"],["Workday","Workday Financials Consultant"],["Workday","Workday Integration Consultant (Studio / PECI)"],["Workday","Workday Reporting / Technical Analyst"],["Workday","Workday Functional Consultant"],["Enterprise Apps","ERP Functional Consultant (HRMS / Finance / Procurement)"],["Commerce Intelligence & Data Ops","Data Acquisition / Web Scraping Engineer"],["Commerce Intelligence & Data Ops","Pricing / Competitive Intelligence Analyst"],["Commerce Intelligence & Data Ops","Catalog Operations Analyst"],["Commerce Intelligence & Data Ops","Annotation / Data QC Analyst"],["Product & Analysis","Business Analyst"],["Product & Analysis","Technical Business Analyst"],["Design","UI / UX Designer"],["Design","UX Researcher"],["Design","Product Designer"],["Design","Design System Designer"]];
+const SR=[["Architecture","Solution / Cloud Architect","Senior",3000],["Architecture","Data Architect","Senior",3000],["Engineering","Tech Lead","Lead",2800],["Security","Senior Security Engineer","Senior",2469],["Cloud & Platform","Senior DevSecOps Engineer","Senior",2725],["Cloud & Platform","Platform Lead","Lead",3009],["Cloud & Platform","SRE Lead","Lead",3253],["Data & AI","Data / Migration Lead","Lead",3074],["Quality","QA Lead","Lead",2716],["Product & Analysis","Scrum Master","Senior",2200],["Delivery & Product","Project Manager","PM",3360],["Delivery & Product","Technical Project Manager / Program Manager","Program",3600],["Delivery & Product","Product Manager","PM",3355],["Salesforce","Salesforce Technical Architect","Architect",3200],["Salesforce","Salesforce Practice Lead","Lead",3400],["SAP","SAP Solution Architect","Architect",3600],["Workday","Workday Solution Architect","Architect",3500],["Intelligent Automation & AI","AI / Automation Solution Architect","Architect",3600],["Intelligent Automation & AI","Data Science Lead","Lead",3200],["Domain Advisory","Government ERP Domain SME (HRMS / Finance / Procurement)","Advisory",2800],["Domain Advisory","EPFO / Social-Security Domain Consultant","Advisory",2600],["Domain Advisory","Customs / Trade Compliance Advisor","Advisory",2600]];
+const CATORDER=["Engineering","Data & AI","Intelligent Automation & AI","Cloud & Platform","Security","Quality","Salesforce","SAP","Workday","Enterprise Apps","Commerce Intelligence & Data Ops","Product & Analysis","Design","Architecture","Delivery & Product","Domain Advisory"];
+const CAT={};
+IC.forEach(([c,r])=>CAT[r]={cat:c,type:'ic',levels:['L1','L2','L3']});
+SR.forEach(([c,r,l,cost])=>CAT[r]={cat:c,type:'sr',levels:[l],cost});
+const ALLROLES=[...IC.map(x=>x[1]),...SR.map(x=>x[1])];
+function costOf(role,level){const b=DB.baselines&&DB.baselines[role+'||'+level];if(b)return b;const m=CAT[role];if(!m)return 0;return m.type=='ic'?Math.round(BASE[level]*tier(role)/10)*10:m.cost;}
+const isBaseline=(role,level)=>!!(DB.baselines&&DB.baselines[role+'||'+level]);
+const dMargin=lv=>LEVELMARGIN[lv]??.58;
+const priceOf=(cost,m)=>Math.round(cost/(1-m));
+const usd=n=>'$'+Math.round(n).toLocaleString();
+const fx=()=>(DB.settings&&+DB.settings.fx)||90;
+function ctcToUsdMo(amt,unit){const f=fx();if(unit==='inr_lpa')return amt*1e5/f/12;if(unit==='inr_mo')return amt/f;if(unit==='usd_yr')return amt/12;return amt;}
+
+/* ===== state ===== */
+let DB={requirements:[],candidates:[],vendors:[],ctc:[],baselines:{},settings:{fx:90},quote:null};
+let sel=null,editReq=null,editCand=null,editVendor=null,rcView='internal';
+const KEY="ns_staffing_ws_v2",uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const $=id=>document.getElementById(id),val=id=>($(id).value||'').trim();
+function load(){try{const s=localStorage.getItem(KEY);if(s)DB=JSON.parse(s);}catch(e){}}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(DB));}catch(e){}}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1700);}
+function esc(s){return(s==null?'':''+s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function uniq(a){return[...new Set(a.filter(Boolean))].sort();}
+function fill(id,arr,all){const e=$(id),cur=e.value;e.innerHTML=(all?`<option value="">${all}</option>`:'')+arr.map(x=>`<option>${esc(x)}</option>`).join('');if(arr.includes(cur))e.value=cur;}
+
+/* ===== tabs ===== */
+function tab(name){document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===name));
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+name));
+  if(name==='rate')renderRate();if(name==='ctc')renderCTC();if(name==='req')renderReq();if(name==='quote')renderQuote();if(name==='vendors')renderVendors();if(name==='prompts')renderPrompts();window.scrollTo(0,0);}
+
+/* ===== rate card ===== */
+function setRcView(v){rcView=v;$('rcInt').classList.toggle('on',v==='internal');$('rcCli').classList.toggle('on',v==='client');renderRate();}
+function renderRate(){
+  fill('rcCat',CATORDER,'All categories');
+  const m=(+$('rcMargin').value)/100;$('rcMarginV').textContent=Math.round(m*100)+'%';
+  const fc=val('rcCat'),q=val('rcSearch').toLowerCase();
+  const head=rcView==='internal'
+    ?`<tr><th>Role</th><th>Level</th><th class="num">Cost /mo</th><th class="num">Margin</th><th class="num">Price /mo</th><th class="num">Hourly</th><th class="num">Annual</th></tr>`
+    :`<tr><th>Role</th><th>Level</th><th class="num">Monthly</th><th class="num">Hourly</th><th class="num">Annual</th></tr>`;
+  let html=head,cols=rcView==='internal'?7:5;
+  CATORDER.forEach(cat=>{
+    if(fc&&fc!==cat)return;
+    const rows=[];
+    IC.filter(x=>x[0]===cat).forEach(([,role])=>{if(q&&!role.toLowerCase().includes(q))return;['L1','L2','L3'].forEach(lv=>rows.push([role,lv]));});
+    SR.filter(x=>x[0]===cat).forEach(([,role,lv])=>{if(q&&!role.toLowerCase().includes(q))return;rows.push([role,lv]);});
+    if(!rows.length)return;
+    html+=`<tr class="catrow"><td colspan="${cols}">${esc(cat)}</td></tr>`;
+    rows.forEach(([role,lv])=>{const c=costOf(role,lv),p=priceOf(c,m);
+      html+=rcView==='internal'
+        ?`<tr><td>${esc(role)}</td><td>${lv}</td><td class="num">${isBaseline(role,lv)?'<span class="baseline" title="Validated baseline from observed CTCs">&bull;</span> ':''}${usd(c)}</td><td class="num">${Math.round(m*100)}%</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(p/160)}</td><td class="num">${usd(p*12)}</td></tr>`
+        :`<tr><td>${esc(role)}</td><td>${lv}</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(p/160)}</td><td class="num">${usd(p*12)}</td></tr>`;});
+  });
+  $('rcTable').innerHTML=html;
+}
+
+/* ===== requirements ===== */
+function clearReqFilters(){['f_client','f_position','f_status','f_priority'].forEach(i=>$(i).value='');renderReq();}
+function reqPass(r){const c=val('f_client'),p=val('f_position'),s=val('f_status'),pr=val('f_priority');
+  return(!c||r.client===c)&&(!p||r.position===p)&&(!s||r.status===s)&&(!pr||r.priority===pr);}
+function renderReq(){
+  fill('f_client',uniq(DB.requirements.map(r=>r.client)),'All clients');
+  fill('f_position',uniq(DB.requirements.map(r=>r.position)),'All positions');
+  fill('f_status',['Open','Hold','Filled','Cancelled'],'Any status');
+  fill('f_priority',['High','Medium','Low'],'Any priority');
+  const open=DB.requirements.filter(r=>r.status==='Open'),openings=open.reduce((a,r)=>a+(+r.openings||0),0);
+  const inplay=DB.candidates.filter(c=>['Submitted','Interview','Offer'].includes(c.stage)).length;
+  $('reqKpis').innerHTML=[['Open requirements',open.length,1],['Total openings',openings,0],['Candidates',DB.candidates.length,0],['In play',inplay,1],['Joined',DB.candidates.filter(c=>c.stage==='Joined').length,0]]
+    .map(([l,n,a])=>`<div class="kpi ${a?'accent':''}"><div class="n">${n}</div><div class="l">${l}</div></div>`).join('');
+  const rows=DB.requirements.filter(reqPass);$('reqCount').textContent=rows.length+' shown';
+  const L=$('reqList');
+  if(!DB.requirements.length)L.innerHTML=`<div class="empty"><b>No requirements yet</b>Log your first open role.<br><br><button class="btn teal" onclick="openReq()">+ New requirement</button></div>`;
+  else if(!rows.length)L.innerHTML=`<div class="empty"><b>Nothing matches</b>Try Reset.</div>`;
+  else L.innerHTML=rows.map(r=>{const cs=DB.candidates.filter(c=>c.reqId===r.id);
+    const rail=cs.length?`<div class="rail">${cs.map(c=>`<i class="r-${esc(c.stage)}" title="${esc(c.name)} · ${esc(c.stage)}"></i>`).join('')}</div>`:'';
+    return `<div class="req p-${esc(r.priority)} ${sel===r.id?'sel':''}" onclick="selReq('${r.id}')"><div class="t"><b>${esc(r.position)}</b><span class="pill s-${esc(r.status)}">${esc(r.status)}</span><span class="cnt" style="margin-left:auto">${cs.length} cand.</span></div><div class="meta">${esc(r.client||'—')} · ${esc(r.level||'')} · ${esc(r.exp||'')} · ${esc(r.location||'')} · ${esc(r.empType||'')} · ${r.openings||1} opening(s)</div>${rail}</div>`;}).join('');
+  renderDetail();persist();
+}
+function selReq(id){sel=(sel===id?null:id);renderReq();}
+function renderDetail(){const d=$('detail'),r=DB.requirements.find(x=>x.id===sel);
+  $('addCandBtn').style.display=r?'inline-block':'none';$('quoteFromReq').style.display=r?'inline-block':'none';
+  if(!r){$('detTitle').textContent='Candidates';d.innerHTML=`<div class="empty"><b>Select a requirement</b>See its pipeline, build a quote, or generate a JD.</div>`;return;}
+  $('detTitle').textContent=r.position;
+  const cs=DB.candidates.filter(c=>c.reqId===r.id);
+  let t=`<div class="row" style="margin-bottom:12px"><button class="btn teal sm" onclick="promptFor('jdB')">JD prompt</button><button class="btn soft sm" onclick="promptFor('email')">Vendor email</button><button class="btn soft sm" onclick="openReq('${r.id}')">Edit</button></div>`;
+  if(!cs.length)t+=`<div class="empty"><b>No candidates yet</b>Add as vendors submit.</div>`;
+  else t+=`<table><thead><tr><th></th><th>Name</th><th>Vendor</th><th>Exp</th><th>Exp. CTC</th><th>Stage</th></tr></thead><tbody>${cs.map(c=>`<tr onclick="openCand('${c.id}')" style="cursor:pointer"><td><span class="flag f-${esc(c.flag)}"></span></td><td><b>${esc(c.name)}</b><div class="hint">${esc(c.location||'')}</div></td><td>${esc(c.vendor||'—')}</td><td>${esc(c.exp||'')}</td><td>${esc(c.ectc||'')}</td><td><span class="stage">${esc(c.stage)}</span></td></tr>`).join('')}</tbody></table>`;
+  d.innerHTML=t;
+}
+function openReq(id){editReq=id||null;$('r_level').innerHTML=['L1','L2','L3','Lead','Senior','Architect','Program','PM','Advisory'].map(l=>`<option>${l}</option>`).join('');
+  $('roleList').innerHTML=ALLROLES.map(r=>`<option value="${esc(r)}">`).join('');
+  const r=id?DB.requirements.find(x=>x.id===id):null;$('reqMT').textContent=r?'Edit requirement':'New requirement';$('reqDel').style.display=r?'inline-block':'none';
+  const g=(f,k,d='')=>$(f).value=r?(r[k]??d):d;
+  g('r_position','position');g('r_client','client');g('r_level','level','L3');g('r_exp','exp');g('r_openings','openings',1);g('r_location','location');g('r_empType','empType','Contract');g('r_priority','priority','High');g('r_status','status','Open');g('r_jd','jdFormat','B');g('r_skills','skills');g('r_notes','notes');
+  open_('reqScrim');}
+function saveReq(){const o={position:val('r_position'),client:val('r_client'),level:val('r_level'),exp:val('r_exp'),openings:val('r_openings')||1,location:val('r_location'),empType:val('r_empType'),priority:val('r_priority'),status:val('r_status'),jdFormat:val('r_jd'),skills:val('r_skills'),notes:val('r_notes')};
+  if(!o.position){toast('Position is required');return;}
+  if(editReq)Object.assign(DB.requirements.find(x=>x.id===editReq),o);else{o.id=uid();o.dateOpened=new Date().toISOString().slice(0,10);DB.requirements.unshift(o);sel=o.id;}
+  close_('reqScrim');renderReq();toast('Saved');}
+function delReq(){if(confirm('Delete this requirement and its candidates?')){DB.requirements=DB.requirements.filter(r=>r.id!==editReq);DB.candidates=DB.candidates.filter(c=>c.reqId!==editReq);if(sel===editReq)sel=null;close_('reqScrim');renderReq();}}
+
+function openCand(id){if(!sel){toast('Select a requirement first');return;}editCand=id||null;
+  $('vendorList').innerHTML=uniq(DB.vendors.map(v=>v.name)).map(v=>`<option value="${esc(v)}">`).join('');
+  const c=id?DB.candidates.find(x=>x.id===id):null;$('candMT').textContent=c?'Edit candidate':'Add candidate';$('candDel').style.display=c?'inline-block':'none';
+  const g=(f,k,d='')=>$(f).value=c?(c[k]??d):d;
+  g('c_name','name');g('c_vendor','vendor');g('c_exp','exp');g('c_cur','currentCTC');g('c_ectc','ectc');g('c_notice','notice');g('c_loc','location');g('c_stage','stage','New');g('c_flag','flag','Green');g('c_notes','notes');
+  open_('candScrim');}
+function saveCand(){const o={name:val('c_name'),vendor:val('c_vendor'),exp:val('c_exp'),currentCTC:val('c_cur'),ectc:val('c_ectc'),notice:val('c_notice'),location:val('c_loc'),stage:val('c_stage'),flag:val('c_flag'),notes:val('c_notes')};
+  if(!o.name){toast('Name is required');return;}
+  if(editCand)Object.assign(DB.candidates.find(x=>x.id===editCand),o);else{o.id=uid();o.reqId=sel;DB.candidates.push(o);}
+  close_('candScrim');renderReq();toast('Saved');}
+function delCand(){DB.candidates=DB.candidates.filter(c=>c.id!==editCand);close_('candScrim');renderReq();}
+
+/* ===== quote builder ===== */
+function blankQuote(){return{client:'',title:'',view:'internal',basis:'level',flat:.60,catMargins:{},lines:[]};}
+function Q(){if(!DB.quote)DB.quote=blankQuote();return DB.quote;}
+function saveQuote(){const q=Q();q.client=val('qClient');q.title=val('qTitle');persist();}
+function setQView(v){Q().view=v;$('qInt').classList.toggle('on',v==='internal');$('qCli').classList.toggle('on',v==='client');renderQuote();}
+function syncLevels(){const role=val('qRole');fill('qLevel',CAT[role]?CAT[role].levels:[]);}
+function addLine(){const role=val('qRole'),lv=val('qLevel');if(!role){toast('Pick a role');return;}
+  Q().lines.push({role,level:lv,qty:+val('qQty')||1,months:+val('qMonths')||12,mo:null});renderQuote();}
+function lineMargin(ln){if(ln.mo!=null)return ln.mo;const q=Q(),cat=CAT[ln.role].cat;if(q.catMargins[cat]!=null)return q.catMargins[cat];return q.basis==='flat'?q.flat:dMargin(ln.level);}
+function renderQuote(){
+  const q=Q();$('qInt').classList.toggle('on',q.view==='internal');$('qCli').classList.toggle('on',q.view==='client');
+  if(document.activeElement!==$('qClient'))$('qClient').value=q.client;if(document.activeElement!==$('qTitle'))$('qTitle').value=q.title;
+  // role picker grouped
+  $('qRole').innerHTML=CATORDER.map(cat=>{const rs=ALLROLES.filter(r=>CAT[r].cat===cat);return rs.length?`<optgroup label="${esc(cat)}">${rs.map(r=>`<option>${esc(r)}</option>`).join('')}</optgroup>`:'';}).join('');
+  if(!val('qLevel'))syncLevels();
+  $('qBasis').value=q.basis;$('qFlatWrap').style.display=q.basis==='flat'?'flex':'none';$('qFlat').value=Math.round(q.flat*100);$('qFlatV').textContent=Math.round(q.flat*100)+'%';
+  q.basis=$('qBasis').value;q.flat=(+$('qFlat').value)/100;
+  // category margin sliders for categories in use
+  const cats=uniq(q.lines.map(l=>CAT[l.role].cat));
+  $('qCatMargins').innerHTML=cats.length?cats.map(c=>{const v=q.catMargins[c]!=null?Math.round(q.catMargins[c]*100):'';return `<div class="mctl"><label title="Override margin for all ${esc(c)} lines">${esc(c)}</label><input type="range" min="30" max="75" value="${v||60}" oninput="setCatMargin('${esc(c)}',this.value)"><span class="mval">${v!==''?v+'%':'auto'}</span>${v!==''?`<button class="btn soft sm" onclick="clearCatMargin('${esc(c)}')">×</button>`:''}</div>`;}).join(''):'<p class="hint">Add a line to set category margins.</p>';
+  const client=q.view==='client';
+  const head=client?`<tr><th>Role</th><th>Level</th><th class="num">Qty</th><th class="num">Monthly</th><th class="num">Ext. monthly</th><th></th></tr>`
+    :`<tr><th>Role</th><th>Level</th><th class="num">Qty</th><th class="num">Cost</th><th class="num">Margin</th><th class="num">Price</th><th class="num">Ext. cost</th><th class="num">Ext. price</th><th></th></tr>`;
+  let html=head,tCost=0,tPrice=0,tCV=0;
+  if(!q.lines.length)html+=`<tr><td colspan="${client?6:9}"><div class="empty"><b>No lines yet</b>Add roles above to build the rate card.</div></td></tr>`;
+  q.lines.forEach((ln,i)=>{const c=costOf(ln.role,ln.level),m=lineMargin(ln),p=priceOf(c,m);
+    tCost+=c*ln.qty;tPrice+=p*ln.qty;tCV+=p*ln.qty*(ln.months||0);
+    const mo=`<input style="width:62px;padding:4px 6px" value="${ln.mo!=null?Math.round(ln.mo*100):''}" placeholder="${Math.round(m*100)}" onchange="setLineMargin(${i},this.value)" title="Override %">`;
+    html+=client
+      ?`<tr><td>${esc(ln.role)}</td><td>${ln.level}</td><td class="num">${ln.qty}</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(p*ln.qty)}</td><td><button class="btn soft sm" onclick="rmLine(${i})">×</button></td></tr>`
+      :`<tr><td>${esc(ln.role)}</td><td>${ln.level}</td><td class="num">${ln.qty}</td><td class="num">${usd(c)}</td><td class="num">${mo}</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(c*ln.qty)}</td><td class="num">${usd(p*ln.qty)}</td><td><button class="btn soft sm" onclick="rmLine(${i})">×</button></td></tr>`;});
+  $('qTable').innerHTML=html;
+  const blended=tPrice?Math.round((1-tCost/tPrice)*100):0;
+  $('qTotals').innerHTML=q.lines.length?(client
+    ?`<div class="row"><div><div class="hint">Total monthly</div><b style="font-size:20px;color:var(--navy)">${usd(tPrice)}</b></div><div><div class="hint">Contract value (incl. months)</div><b style="font-size:20px;color:var(--navy)">${usd(tCV)}</b></div></div>`
+    :`<div class="row"><div><div class="hint">Total monthly cost</div><b style="font-size:18px">${usd(tCost)}</b></div><div><div class="hint">Total monthly price</div><b style="font-size:18px;color:var(--teal-d)">${usd(tPrice)}</b></div><div><div class="hint">Blended margin</div><b style="font-size:18px">${blended}%</b></div><div><div class="hint">Contract value</div><b style="font-size:18px">${usd(tCV)}</b></div></div>`):'';
+  persist();
+}
+function setCatMargin(c,v){Q().catMargins[c]=(+v)/100;renderQuote();}
+function clearCatMargin(c){delete Q().catMargins[c];renderQuote();}
+function setLineMargin(i,v){Q().lines[i].mo=v===''?null:(+v)/100;renderQuote();}
+function rmLine(i){Q().lines.splice(i,1);renderQuote();}
+function quoteFromReq(){const r=DB.requirements.find(x=>x.id===sel);if(!r)return;const q=blankQuote();q.client=r.client||'';q.title=r.position;
+  if(CAT[r.position])q.lines.push({role:r.position,level:CAT[r.position].levels.includes(r.level)?r.level:CAT[r.position].levels[0],qty:+r.openings||1,months:12,mo:null});
+  DB.quote=q;tab('quote');toast('Quote started from requirement');}
+
+function exportQuote(kind){const q=Q();if(!q.lines.length){toast('No lines');return;}
+  let head,rows;
+  if(kind==='client'){head=['Client','Role','Level','Qty','Monthly (USD)','Hourly (USD)','Annual (USD)','Ext. monthly (USD)'];
+    rows=q.lines.map(ln=>{const p=priceOf(costOf(ln.role,ln.level),lineMargin(ln));return [q.client,ln.role,ln.level,ln.qty,Math.round(p),Math.round(p/160),Math.round(p*12),Math.round(p*ln.qty)];});}
+  else{head=['Client','Role','Level','Qty','Cost (USD)','Margin %','Price (USD)','Ext. cost','Ext. price'];
+    rows=q.lines.map(ln=>{const c=costOf(ln.role,ln.level),m=lineMargin(ln),p=priceOf(c,m);return [q.client,ln.role,ln.level,ln.qty,c,Math.round(m*100),p,c*ln.qty,p*ln.qty];});}
+  dl((kind==='client'?'client-rate-card':'internal-cost-sheet')+'.csv',[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv');toast('Exported');}
+function printQuote(){const q=Q();if(!q.lines.length){toast('No lines');return;}
+  const rows=q.lines.map(ln=>{const p=priceOf(costOf(ln.role,ln.level),lineMargin(ln));return `<tr><td>${esc(ln.role)}</td><td>${ln.level}</td><td style="text-align:center">${ln.qty}</td><td style="text-align:right">${usd(p)}</td><td style="text-align:right">${usd(p/160)}</td><td style="text-align:right">${usd(p*12)}</td></tr>`;}).join('');
+  const w=window.open('','_blank');if(!w){toast('Allow pop-ups to print');return;}
+  w.document.write(`<html><head><title>Rate Card — ${esc(q.client||'')}</title><style>body{font-family:Calibri,Arial,sans-serif;color:#1d2433;padding:34px}h1{color:#1B3A6B;margin:0}.sub{color:#6b7588;margin:4px 0 18px}table{width:100%;border-collapse:collapse}th{background:#1B3A6B;color:#fff;text-align:left;padding:9px;font-size:13px}td{padding:8px 9px;border-bottom:1px solid #e3e7ef;font-size:13px}th:nth-child(n+3),td:nth-child(n+3){text-align:right}.note{color:#6b7588;font-size:12px;margin-top:16px}</style></head><body><h1>Netscribes — Rate Card</h1><div class="sub">${esc(q.client||'')}${q.title?' · '+esc(q.title):''}</div><table><thead><tr><th>Role</th><th>Level</th><th>Qty</th><th>Monthly</th><th>Hourly</th><th>Annual</th></tr></thead><tbody>${rows}</tbody></table><div class="note">All rates in USD per resource. Indicative, valid 90 days, exclusive of applicable taxes. Monthly rate based on 160 billable hours.</div></body></html>`);
+  w.document.close();setTimeout(()=>w.print(),300);}
+function quotePrompt(){const q=Q();if(!q.lines.length){toast('No lines');return;}
+  const lines=q.lines.map(ln=>{const p=priceOf(costOf(ln.role,ln.level),lineMargin(ln));return `- ${ln.role} (${ln.level}) ×${ln.qty} — ${usd(p)}/mo`;}).join('\n');
+  showPrompt('Rate-card document prompt',`Turn the following into a polished, client-facing rate card document in the Netscribes house style (navy/teal brand, Calibri). Client: ${q.client||'[client]'}${q.title?' · '+q.title:''}. Show role, level, quantity and monthly rate in USD; add a short scope paragraph framing this as a managed delivery pod. Do not show cost or margin. Add the standard footer: rates indicative, valid 90 days, exclusive of taxes, 160 billable hours/month.\n\nLines:\n${lines}\n\nTotal monthly: ${usd(q.lines.reduce((a,ln)=>a+priceOf(costOf(ln.role,ln.level),lineMargin(ln))*ln.qty,0))}.`,
+  'Paste into your Claude project chat to get a branded DOCX/PDF rate card.');}
+
+/* ===== vendors ===== */
+function seedVendors(force){
+  if(DB.vendors.length&&!force)return;
+  if(force&&DB.vendors.length&&!confirm('Reload the default roster? Adds the standard list, keeps your additions.'))return;
+  const seed=[
+    ['Endeavour','Mixed','Green',1,'Actively engaged'],['CodersBrain','Contract','Amber',1,'Contract-heavy'],['NS Global Corporation','Mixed','Green',1,'Actively engaged'],
+    ['Supersourcing','Mixed','Green',1,'Actively engaged'],['NR Consulting','Contract','Green',1,'Actively engaged'],['Nexthire','Mixed','Amber',1,'No evident Salesforce capability'],
+    ['Antal International','FTE','Green',0,'Strong mid-senior FTE search'],['Michael Page','FTE','Green',0,'Mid-senior FTE only'],['Careernet','FTE','Green',0,'Strong in tech FTE'],
+    ['Cresendo','FTE','Green',0,'Tech & BFSI FTE'],['CIEL HR Services','FTE','Green',0,'Strong IT FTE'],['Spectrum Talent','Mixed','Green',0,'FTE + contract at scale'],
+    ['Manpower Group','Mixed','Green',0,'FTE + contract'],['Adecco India','Mixed','Green',0,'FTE + contract'],['Pylon Management','FTE','Green',0,'Exec/mid-senior search'],
+    ['Hucon Solutions','FTE','Green',0,'Mid-tier IT FTE'],['TalentNiti','FTE','Green',0,'FTE boutique'],['Trustklub Consulting','FTE','Green',0,'FTE boutique'],
+    ['Top Hire','FTE','Green',0,'FTE search boutique'],['Unify Search','FTE','Green',0,'FTE-focused search'],
+    ['Teamplus Staffing','Contract','Pass',0,'Contract/temp — weak for FTE'],['Genetic Callnet','Contract','Pass',0,'Contract — weak for FTE'],
+    ['Shell Infotech','Contract','Pass',0,'Contract-heavy'],['GNK E Services','Contract','Pass',0,'Contract/temp-heavy'],['Trispoke Managed Services','Contract','Amber',0,'Contract/staffing']
+  ];
+  const have=new Set(DB.vendors.map(v=>v.name));
+  seed.forEach(([name,type,fit,emp,notes])=>{if(!have.has(name))DB.vendors.push({id:uid(),name,type,fit,emp:!!emp,notes,contacts:[]});});
+  renderVendors();persist();
+}
+function vDatalists(){const o=uniq(DB.vendors.map(v=>v.name)).map(v=>`<option value="${esc(v)}">`).join('');if($('vendorList'))$('vendorList').innerHTML=o;if($('vendorList2'))$('vendorList2').innerHTML=o;}
+function renderVendors(){const f=val('vFilter'),e=val('vEmp');const rows=DB.vendors.filter(v=>(!f||v.type===f)&&(!e||v.emp));
+  let html=`<thead><tr><th>Vendor</th><th>Type</th><th>Empanelled</th><th>Fit</th><th>Contacts</th><th>Notes</th><th></th></tr></thead><tbody>`;
+  if(!rows.length)html+=`<tr><td colspan="7"><div class="empty"><b>No vendors</b>Reload the roster or add one.</div></td></tr>`;
+  else html+=rows.map(v=>{const n=(v.contacts||[]).length;return `<tr><td><b>${esc(v.name)}</b></td><td><span class="tag tg-${esc(v.type)}">${esc(v.type)}</span></td><td>${v.emp?'<span class="badge">Empanelled</span>':'<span class="hint">—</span>'}</td><td><span class="flag f-${esc(v.fit)}"></span> ${esc(v.fit)}</td><td class="hint">${n?n+' contact'+(n>1?'s':''):'—'}</td><td class="hint">${esc(v.notes||'')}</td><td style="white-space:nowrap"><button class="btn soft sm" onclick="openVmail('${v.id}')">Email</button> <button class="btn soft sm" onclick="openVendor('${v.id}')">Edit</button></td></tr>`;}).join('');
+  $('vTable').innerHTML=html+'</tbody>';vDatalists();persist();}
+function contactRow(c){c=c||{};const d=document.createElement('div');d.className='row';d.style.marginBottom='6px';
+  d.innerHTML=`<input class="vc-name" placeholder="Name" value="${esc(c.name||'')}"><input class="vc-email" placeholder="Email" value="${esc(c.email||'')}"><input class="vc-role" placeholder="Role" value="${esc(c.role||'')}" style="max-width:120px"><button class="btn soft sm" style="flex:0;max-width:40px" onclick="this.parentNode.remove()">×</button>`;return d;}
+function addContactRow(c){$('v_contacts').appendChild(contactRow(c));}
+function gatherContacts(){return[...document.querySelectorAll('#v_contacts .row')].map(r=>({name:r.querySelector('.vc-name').value.trim(),email:r.querySelector('.vc-email').value.trim(),role:r.querySelector('.vc-role').value.trim()})).filter(c=>c.name||c.email);}
+function openVendor(id){editVendor=id||null;const v=id?DB.vendors.find(x=>x.id===id):null;$('venMT').textContent=v?'Edit vendor':'Add vendor';$('venDel').style.display=v?'inline-block':'none';
+  const g=(f,k,d='')=>$(f).value=v?(v[k]??d):d;g('v_name','name');g('v_type','type','Mixed');g('v_fit','fit','Green');g('v_notes','notes');$('v_emp').value=(v?(v.emp?'1':''):'1');
+  $('v_contacts').innerHTML='';const cs=(v&&v.contacts)||[];cs.forEach(addContactRow);if(!cs.length)addContactRow();open_('vendorScrim');}
+function saveVendor(){const o={name:val('v_name'),type:val('v_type'),fit:val('v_fit'),emp:val('v_emp')==='1',notes:val('v_notes'),contacts:gatherContacts()};if(!o.name){toast('Name required');return;}
+  if(editVendor)Object.assign(DB.vendors.find(x=>x.id===editVendor),o);else{o.id=uid();DB.vendors.push(o);}close_('vendorScrim');renderVendors();toast('Saved');}
+function delVendor(){DB.vendors=DB.vendors.filter(v=>v.id!==editVendor);close_('vendorScrim');renderVendors();}
+let vmailVendor=null;
+function openVmail(id){vmailVendor=id;fill('vmailReq',['— generic —',...DB.requirements.map(r=>r.position+(r.client?' · '+r.client:''))]);renderVmail();open_('vmailScrim');}
+function vmailReqObj(){const i=$('vmailReq').selectedIndex;return i>0?DB.requirements[i-1]:null;}
+function renderVmail(){const v=DB.vendors.find(x=>x.id===vmailVendor);if(!v)return;$('vmailT').textContent='Email a mandate — '+v.name;
+  const r=vmailReqObj()||{position:'[role]',level:'[level]',exp:'[experience]',location:'[location]',empType:'[type]',openings:'[n]',skills:'[skills]'};
+  const subj=`Open mandate: ${r.position} (${r.level})`;
+  const body=name=>`Hi ${name},\n\nWe have an open mandate you may be able to help with.\n\nPosition: ${r.position} (${r.level} ${r.exp})\nLocation: ${r.location} | Type: ${r.empType} | Openings: ${r.openings}\nMust-have skills: ${r.skills}\n\nPlease share anonymized profiles with current and expected CTC, notice period and current location. Happy to set up a quick intro screen for strong fits.\n\nThanks,\nNetscribes talent team`;
+  const cs=v.contacts||[];
+  $('vmailContacts').innerHTML=cs.length?cs.map(c=>{const href=`mailto:${encodeURIComponent(c.email||'')}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body(c.name||'there'))}`;
+    return `<div class="contact-line"><div style="flex:1"><b>${esc(c.name||'(no name)')}</b> <span class="hint">${esc(c.role||'')}</span><div class="hint">${esc(c.email||'no email on file')}</div></div>${c.email?`<a href="${href}">&#9993; Email</a>`:''}</div>`;}).join(''):'<p class="hint">No contacts saved yet — add them via Edit.</p>';
+  _p=`Draft a vendor outreach email to ${v.name} for the mandate below, in our house style: simple sentences, no em-dashes, client name confidential. Two variants, each under 150 words.\n\nPosition: ${r.position} (${r.level} ${r.exp})\nLocation: ${r.location} · Type: ${r.empType} · Openings: ${r.openings}\nMust-have skills: ${r.skills}\nAsk for: anonymized profiles, current and expected CTC, notice period, current location, availability for a 15-minute intro screen.\nSign off as the Netscribes talent team.`;
+}
+
+/* ===== prompts ===== */
+const PROMPTS=[
+  ['jdB','JD — Format B (agency mandate)','Confidential mandate for vendors. Client name abstracted.'],
+  ['jdA','JD — Format A (branded)','External branded JD for job boards and candidates.'],
+  ['email','Vendor outreach email','Two drafts in house style, client name confidential.'],
+  ['profile','Anonymized candidate profile','Two-column DOCX; real org names kept, candidate name removed.'],
+  ['screen','Screening feedback','3–4 bullets, green / amber / pass, not over-technical.'],
+  ['bench','Cost-benchmarking research','Prompt for Perplexity/Gemini to validate cost ranges.']
+];
+function renderPrompts(){fill('pReq',['— none —',...DB.requirements.map(r=>r.position+(r.client?' · '+r.client:''))]);
+  $('promptCards').innerHTML=PROMPTS.map(([k,t,d])=>`<div class="card" style="margin:0"><h3>${esc(t)}</h3><p class="hint" style="margin:6px 0 12px">${esc(d)}</p><button class="btn teal sm" onclick="promptFor('${k}')">Open prompt</button></div>`).join('');}
+function reqFromPicker(){const i=$('pReq').selectedIndex;if(i<=0)return null;return DB.requirements[i-1];}
+function promptFor(kind){
+  let r=DB.requirements.find(x=>x.id===sel)||reqFromPicker();
+  const R=r||{position:'[role]',level:'[level]',exp:'[experience]',location:'[location]',empType:'[type]',openings:'[n]',client:'[client]',skills:'[skills]',jdFormat:'B'};
+  $('mailBtn').style.display='none';
+  if(kind==='jdB'||kind==='jdA'){const A=kind==='jdA';
+    showPrompt(A?'JD — Format A':'JD — Format B',
+`Generate a job description in ${A?'Format A (branded external JD, Netscribes-branded, for job boards / candidates)':'Format B (confidential agency mandate, no client branding, client fully abstracted)'}, in the Netscribes house style from the JD Format Guide in this project. Output DOCX-ready.
+
+Role: ${R.position}
+Level: ${R.level}
+Experience: ${R.exp}
+Location: ${R.location}
+Employment type: ${R.empType}
+Openings: ${R.openings}
+Client context (CONFIDENTIAL${A?'':' — never name the client'}): ${R.client}
+Must-have skills: ${R.skills}
+
+Follow the guide exactly for section order, boilerplate and formatting. No internal rate information. ${A?'Use the About Netscribes and Equal Opportunity boilerplate verbatim.':'Add the confidentiality notice; keep each section independently sendable to an agency.'}`,
+    'Paste into your Claude project chat. It references the JD Format Guide already in the project.');}
+  else if(kind==='email'){
+    showPrompt('Vendor outreach email',
+`Draft a vendor outreach email for the mandate below, in our house style: simple sentences, no em-dashes, clean punctuation, implied professionalism, client name confidential. Two variants (one warm, one direct), each under 150 words.
+
+Position: ${R.position} (${R.level} ${R.exp})
+Location: ${R.location} · Type: ${R.empType} · Openings: ${R.openings}
+Must-have skills: ${R.skills}
+Ask for: anonymized profiles, current and expected CTC, notice period, current location, availability for a 15-minute intro screen.
+
+Do not reveal the client name. Sign off as the Netscribes talent team.`,'Paste into Claude for two drafts, or use the mailto button for a quick templated send.');
+    $('mailBtn').style.display='inline-block';
+    $('mailBtn').dataset.subj=`Open mandate: ${R.position} (${R.level})`;
+    $('mailBtn').dataset.body=`Hi,\n\nWe have an open mandate you may be able to help with.\n\nPosition: ${R.position} (${R.level} ${R.exp})\nLocation: ${R.location} | Type: ${R.empType} | Openings: ${R.openings}\nMust-have skills: ${R.skills}\n\nPlease share anonymized profiles with current and expected CTC, notice period and current location. Happy to set up a quick intro screen for strong fits.\n\nThanks,\nNetscribes talent team`;}
+  else if(kind==='profile'){
+    showPrompt('Anonymized candidate profile',
+`Format the attached resume into our anonymized two-column profile (DOCX), matching the template in this project:
+- Navy header block with the role title; candidate name REMOVED (use a blank or [Candidate]) unless I say otherwise.
+- Left column: contact placeholder, then numbered Key Expertise.
+- Right column: Profile summary, Education, Work Experience (and a separate Project Experience section if the resume is structured that way).
+- Keep the REAL organization and client names (e.g. Deloitte, Capgemini, Accenture, MetLife) — only the candidate's name is removed.
+- Detail Key Expertise and Work Experience fully from the source; do not abbreviate.
+Flag any gaps (missing education, missing project dates) for vendor follow-up before the client share. Role context: ${R.position} (${R.level}).`,
+    'Attach the candidate resume in chat, then paste this.');}
+  else if(kind==='screen'){
+    showPrompt('Screening feedback',
+`Give 3–4 short bullet points of screening feedback for the attached candidate against the role below. Keep it crisp and not over-technical — focus on fit, communication, experience mix, and any risk to flag. End with a clear verdict: green, amber, or pass.
+
+Role: ${R.position} (${R.level}, ${R.exp}). Must-have skills: ${R.skills}.
+Watch for: resume inflation, AMS/claims that don't hold up, CV-factory bullet patterns, name/location/education mismatches.`,
+    'Attach the resume or notes in chat, then paste this.');}
+  else if(kind==='bench'){
+    showPrompt('Cost-benchmarking research',
+`Act as a compensation benchmarking analyst for the Indian IT services market (Delhi NCR / Pune / Bengaluru), 2026. For each role below give fully-loaded annual CTC in INR lakhs as a low–mid–high range, citing Indian sources (Naukri, AmbitionBox, Glassdoor India, levels.fyi India, vendor rate cards). Distinguish product vs services pay and note typical contractor bill rates where they differ.
+
+Roles: ${R.position} (${R.level} / ${R.exp}) [add more as needed]
+
+Return: Role | Experience | Low (LPA) | Mid (LPA) | High (LPA) | Source(s). Flag thin or highly variable data.`,
+    'Run in Perplexity/Gemini, then bring the table back here to update costs.');}
+}
+function openMail(){const b=$('mailBtn');location.href=`mailto:?subject=${encodeURIComponent(b.dataset.subj)}&body=${encodeURIComponent(b.dataset.body)}`;}
+
+/* ===== prompt modal + io ===== */
+let _p='';
+function showPrompt(t,x,n){$('promptTitle').textContent=t;$('promptText').textContent=x;$('promptNote').textContent=n;_p=x;open_('promptScrim');}
+function copyPrompt(){navigator.clipboard?.writeText(_p).then(()=>toast('Copied')).catch(()=>{const a=document.createElement('textarea');a.value=_p;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();toast('Copied');});}
+function exportJSON(){dl('data.json',JSON.stringify(DB,null,2),'application/json');toast('Saved data.json — commit it to the repo to share');}
+function importJSON(){$('fileIn').click();}
+function mergeShape(d){return Object.assign({requirements:[],candidates:[],vendors:[],ctc:[],baselines:{},settings:{fx:90},quote:null},d);}
+$('fileIn').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d.requirements){if((DB.requirements.length||DB.vendors.length)&&!confirm('Replace current data with the imported file?'))return;DB=mergeShape(d);sel=null;persist();renderAll();tab('req');toast('Imported');}else toast('Not a workspace file');}catch{toast('Could not read file');}};rd.readAsText(f);e.target.value='';});
+function csvCell(v){v=(v==null?'':''+v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
+function dl(name,content,type){const b=new Blob([content],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+function open_(id){$(id).classList.add('on');}function close_(id){$(id).classList.remove('on');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.scrim.on').forEach(s=>s.classList.remove('on'));});
+document.querySelectorAll('.scrim').forEach(s=>s.addEventListener('mousedown',e=>{if(e.target===s)s.classList.remove('on');}));
+
+/* ===== login ===== */
+const AUTH=btoa('techstaffing@netscribes.com|Staffing@001');
+function doLogin(){const u=val('lg_user').toLowerCase(),p=$('lg_pass').value;
+  if(btoa(u+'|'+p)===AUTH){sessionStorage.setItem('ns_auth','1');$('login').classList.add('hidden');$('lg_err').textContent='';}
+  else $('lg_err').textContent='Incorrect email or password.';}
+function logout(){sessionStorage.removeItem('ns_auth');$('lg_pass').value='';$('login').classList.remove('hidden');}
+
+/* ===== settings + repo ===== */
+const GH_REPO='ns-adiraghavan/techstaffing';
+const GH_FILE='data.json';
+const GH_KEY='ns_gh_token_v1';
+const GH_API=`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
+const ghToken=()=>localStorage.getItem(GH_KEY)||'';
+function openSettings(){$('set_fx').value=fx();$('set_ghtoken').value=ghToken();open_('settingsScrim');}
+function saveSettings(){
+  DB.settings.fx=+val('set_fx')||90;
+  const tok=($('set_ghtoken').value||'').trim();
+  if(tok)localStorage.setItem(GH_KEY,tok);
+  else localStorage.removeItem(GH_KEY);
+  persist();close_('settingsScrim');renderRate();renderCTC();renderQuote();
+  toast('Settings saved'+(tok?' — token stored':''));
+}
+function setFx(v){DB.settings.fx=+v||90;persist();renderCTC();}
+
+async function ghGet(){
+  const tok=ghToken();
+  const headers={'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
+  if(tok)headers['Authorization']='Bearer '+tok;
+  const r=await fetch(GH_API,{headers,cache:'no-store'});
+  if(r.status===404)return null;
+  if(!r.ok)throw new Error(`GitHub ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+async function loadRepo(silent){
+  const tok=ghToken();
+  // With token: use GitHub API. Without: fall back to raw URL (works on GitHub Pages)
+  if(tok){
+    try{
+      const meta=await ghGet();
+      if(!meta)return false;
+      const d=JSON.parse(atob(meta.content.replace(/\n/g,'')));
+      if(d&&(d.requirements||d.vendors)){DB=mergeShape(d);persist();return true;}
+    }catch(e){if(!silent)toast('GitHub sync failed: '+(e.message||e));return false;}
+  } else {
+    try{
+      const rawUrl=`https://raw.githubusercontent.com/${GH_REPO}/main/${GH_FILE}`;
+      const r=await fetch(rawUrl,{cache:'no-store'});
+      if(!r.ok)throw 0;
+      const d=await r.json();
+      if(d&&(d.requirements||d.vendors)){DB=mergeShape(d);persist();return true;}
+    }catch(e){if(!silent)toast('No data.json reachable — add a GitHub token in Settings');}
+  }
+  return false;
+}
+
+async function syncRepo(){
+  if((DB.requirements.length||DB.vendors.length)&&!confirm('Replace current data with the version on GitHub?'))return;
+  toast('Pulling from GitHub…');
+  if(await loadRepo(false)){sel=null;renderAll();toast('Synced from GitHub');}
+}
+
+async function pushToGitHub(){
+  const tok=ghToken();
+  if(!tok){toast('Add your GitHub token in Settings first');openSettings();return;}
+  const payload=JSON.stringify(DB,null,2);
+  const encoded=btoa(unescape(encodeURIComponent(payload)));
+  let sha=null;
+  try{const meta=await ghGet();if(meta)sha=meta.sha;}catch(e){/*new file ok*/}
+  const body={message:`data: workspace sync ${new Date().toISOString().slice(0,16)}`,content:encoded};
+  if(sha)body.sha=sha;
+  try{
+    const r=await fetch(GH_API,{method:'PUT',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify(body)});
+    if(!r.ok)throw new Error(`${r.status}: ${await r.text()}`);
+    toast('Pushed to GitHub');
+  }catch(e){toast('Push failed: '+(e.message||e));}
+}
+
+
+/* ===== CTC & baselines ===== */
+function syncCtcLevels(){const role=val('ct_role');fill('ct_level',CAT[role]?CAT[role].levels:[]);}
+function addCtc(){const role=val('ct_role'),lv=val('ct_level'),vendor=val('ct_vendor'),amt=+val('ct_amt'),cur=val('ct_cur');
+  if(!role||!amt){toast('Pick a role and amount');return;}
+  DB.ctc.push({id:uid(),role,level:lv,vendor,amt,cur,date:new Date().toISOString().slice(0,10)});$('ct_amt').value='';renderCTC();toast('CTC added');}
+function bulkCtc(){const t=val('ct_bulk');if(!t)return;let n=0;
+  t.split(/\n/).forEach(line=>{const p=line.split(/\t|,/).map(s=>s.trim());if(p.length<4)return;const[role,level,vendor,amt,cur]=p;if(!role||!(+amt))return;
+    DB.ctc.push({id:uid(),role,level:level||'L2',vendor:vendor||'',amt:+amt,cur:(cur||'inr_lpa').toLowerCase(),date:new Date().toISOString().slice(0,10)});n++;});
+  $('ct_bulk').value='';renderCTC();toast(n+' rows imported');}
+function delCtc(id){DB.ctc=DB.ctc.filter(c=>c.id!==id);renderCTC();}
+function setBaseline(role,level,usdmo){DB.baselines[role+'||'+level]=Math.round(usdmo);persist();renderCTC();toast('Baseline set — rate card & quotes updated');}
+function clearBaseline(key){delete DB.baselines[key];persist();renderCTC();}
+let ctcOpen=new Set();
+function toggleCtcPos(k){ctcOpen.has(k)?ctcOpen.delete(k):ctcOpen.add(k);renderCTC();}
+const unitLabel=u=>({inr_lpa:'LPA',inr_mo:'INR/mo',usd_mo:'$/mo',usd_yr:'$/yr'}[u]||u);
+function renderCTC(){
+  $('ct_fx').value=fx();
+  $('ct_role').innerHTML=CATORDER.map(cat=>{const rs=ALLROLES.filter(r=>CAT[r].cat===cat);return rs.length?`<optgroup label="${esc(cat)}">${rs.map(r=>`<option>${esc(r)}</option>`).join('')}</optgroup>`:'';}).join('');
+  if(!val('ct_level'))syncCtcLevels();
+  $('vendorList2')&&($('vendorList2').innerHTML=uniq(DB.vendors.map(v=>v.name)).map(v=>`<option value="${esc(v)}">`).join(''));
+  const obs=DB.ctc||[];$('ctCount').textContent=obs.length+' observations';
+  // by position
+  const byPos={};obs.forEach(o=>{const k=o.role+'||'+o.level;(byPos[k]=byPos[k]||[]).push(o);});
+  let ph=`<thead><tr><th>Role</th><th>Level</th><th class="num">n</th><th class="num">Avg cost</th><th class="num">Min</th><th class="num">Max</th><th class="num">Model</th><th class="num">Baseline</th><th></th></tr></thead><tbody>`;
+  const keys=Object.keys(byPos).sort();
+  if(!keys.length)ph+=`<tr><td colspan="9"><div class="empty"><b>No observations yet</b>Add vendor CTCs above to build position baselines.</div></td></tr>`;
+  keys.forEach(k=>{const[role,lv]=k.split('||');const arr=byPos[k];const us=arr.map(o=>ctcToUsdMo(o.amt,o.cur));
+    const avg=us.reduce((x,y)=>x+y,0)/us.length,mn=Math.min(...us),mx=Math.max(...us);
+    const model=CAT[role]?(CAT[role].type=='ic'?Math.round(BASE[lv]*tier(role)/10)*10:CAT[role].cost):0;
+    const bl=DB.baselines[k],isOpen=ctcOpen.has(k),kk=esc(k).replace(/'/g,"\\'"),rr=esc(role).replace(/'/g,"\\'");
+    const tip=arr.map(o=>`${o.vendor||'?'}: ${o.amt} ${unitLabel(o.cur)}  ->  ${usd(ctcToUsdMo(o.amt,o.cur))}/mo`).join('\n');
+    ph+=`<tr style="cursor:pointer" onclick="toggleCtcPos('${kk}')" title="Click to see the individual CTCs behind this average"><td><span class="caret">${isOpen?'\u25BE':'\u25B8'}</span> ${esc(role)}</td><td>${esc(lv)}</td><td class="num">${arr.length}</td><td class="num" title="${esc(tip)}"><b>${usd(avg)}</b></td><td class="num">${usd(mn)}</td><td class="num">${usd(mx)}</td><td class="num">${usd(model)}</td><td class="num">${bl?'<span class="baseline">'+usd(bl)+'</span>':'\u2014'}</td><td style="white-space:nowrap"><button class="btn soft sm" onclick="event.stopPropagation();setBaseline('${rr}','${esc(lv)}',${Math.round(avg)})">Use avg</button>${bl?` <button class="btn soft sm" onclick="event.stopPropagation();clearBaseline('${kk}')">\u00d7</button>`:''}</td></tr>`;
+    if(isOpen)ph+=`<tr><td colspan="9" style="background:#fafbfe;padding:6px 10px">${arr.slice().reverse().map(o=>`<div class="contact-line"><div style="flex:1"><b>${esc(o.vendor||'(unspecified)')}</b> <span class="hint">${esc(o.date||'')}</span></div><div style="min-width:130px;text-align:right">${o.amt} ${esc(unitLabel(o.cur))}</div><div style="min-width:90px;text-align:right"><b>${usd(ctcToUsdMo(o.amt,o.cur))}</b>/mo</div><button class="btn soft sm" style="max-width:36px" onclick="event.stopPropagation();delCtc('${o.id}')">\u00d7</button></div>`).join('')}</td></tr>`;});
+  $('ctPosTable').innerHTML=ph+'</tbody>';
+  // by vendor
+  const byVen={};obs.forEach(o=>{const v=o.vendor||'(unspecified)';(byVen[v]=byVen[v]||[]).push(ctcToUsdMo(o.amt,o.cur));});
+  let vh=`<thead><tr><th>Vendor</th><th class="num">n</th><th class="num">Avg cost /mo</th></tr></thead><tbody>`;
+  const vk=Object.keys(byVen).sort();
+  if(!vk.length)vh+=`<tr><td colspan="3" class="hint">No data yet.</td></tr>`;
+  vk.forEach(v=>{const a=byVen[v];vh+=`<tr><td>${esc(v)}</td><td class="num">${a.length}</td><td class="num">${usd(a.reduce((x,y)=>x+y,0)/a.length)}</td></tr>`;});
+  $('ctVendorTable').innerHTML=vh+'</tbody>';
+  // raw
+  let rh=`<thead><tr><th>Role</th><th>Level</th><th>Vendor</th><th class="num">Amount</th><th>Unit</th><th class="num">USD /mo</th><th>Date</th><th></th></tr></thead><tbody>`;
+  if(!obs.length)rh+=`<tr><td colspan="8" class="hint">No observations.</td></tr>`;
+  obs.slice().reverse().forEach(o=>{rh+=`<tr><td>${esc(o.role)}</td><td>${esc(o.level)}</td><td>${esc(o.vendor||'\u2014')}</td><td class="num">${o.amt}</td><td>${esc(unitLabel(o.cur))}</td><td class="num">${usd(ctcToUsdMo(o.amt,o.cur))}</td><td class="hint">${esc(o.date||'')}</td><td><button class="btn soft sm" onclick="delCtc('${o.id}')">\u00d7</button></td></tr>`;});
+  $('ctRawTable').innerHTML=rh+'</tbody>';
+  persist();
+}
+function exportCtc(){if(!(DB.ctc||[]).length){toast('No observations');return;}
+  const head=['Role','Level','Vendor','Amount','Unit','USD per month','Date'];
+  const rows=DB.ctc.map(o=>[o.role,o.level,o.vendor,o.amt,o.cur,Math.round(ctcToUsdMo(o.amt,o.cur)),o.date]);
+  dl('ctc-observations.csv',[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv');toast('Exported');}
+
+function renderAll(){renderRate();renderCTC();renderReq();renderQuote();renderVendors();renderPrompts();}
+
+/* ===== init ===== */
+$('ct_role')&&$('ct_role').addEventListener('change',syncCtcLevels);
+async function init(){
+  load();
+  if(!DB.requirements.length&&!DB.vendors.length&&!DB.ctc.length){await loadRepo(true);}
+  DB=mergeShape(DB);
+  seedVendors(false);
+  if(sessionStorage.getItem('ns_auth')==='1')$('login').classList.add('hidden');
+  renderAll();
+}
+init();
+</script>
+</body>
+</html>

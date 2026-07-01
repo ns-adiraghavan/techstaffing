@@ -8,12 +8,14 @@
 <style>
   :root{
     --navy:#1B3A6B;--navy-d:#142d54;--teal:#1D9E75;--teal-d:#178a64;--red:#C0392B;
-    --ink:#1d2433;--muted:#6b7588;--line:#e3e7ef;--bg:#f5f7fb;--card:#fff;
+    --ink:#1d2433;--muted:#6b7588;--line:#e3e7ef;--bg:#f4f6fb;--card:#fff;
     --amber:#E0A800;--green:#1D9E75;--grey:#9aa3b2;--soft:#eef1f7;--softteal:#e6f6ef;
-    --shadow:0 1px 2px rgba(20,45,84,.06),0 6px 20px rgba(20,45,84,.06);
+    --softamber:#fdf3d9;--softred:#fbeae8;
+    --shadow:0 1px 2px rgba(20,45,84,.05),0 6px 20px rgba(20,45,84,.06);
+    --shadow-lg:0 8px 30px rgba(20,45,84,.10);
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45}
+  body{margin:0;font-family:Calibri,"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
   button{font-family:inherit;cursor:pointer;border:none;border-radius:7px;font-size:14px}
   input,select,textarea{font-family:inherit;font-size:14px;border:1px solid var(--line);border-radius:7px;padding:8px 10px;width:100%;background:#fff;color:var(--ink)}
   input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--teal);outline-offset:1px}
@@ -39,10 +41,14 @@
   nav.tabs button.on{color:var(--navy);border-bottom-color:var(--teal)}
   nav.tabs button:hover{color:var(--navy)}
 
-  main{max-width:1240px;margin:0 auto;padding:20px}
-  section.tab{display:none} section.tab.on{display:block}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:16px}
+  main{max-width:1240px;margin:0 auto;padding:22px}
+  section.tab{display:none} section.tab.on{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+  .tabhd{margin:0 0 14px}
+  .tabhd h2{font-size:21px} .tabhd .sub{margin:3px 0 0;max-width:760px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:16px 18px;margin-bottom:16px}
   .card.pad0{padding:0;overflow:hidden}
+  .card h3+.hint{margin-top:6px}
   .chd{display:flex;align-items:center;gap:10px;padding:13px 16px;border-bottom:1px solid var(--line)}
   .chd .sp{margin-left:auto}
   .cbd{padding:14px 16px}
@@ -93,6 +99,7 @@
   .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
   .seg button{background:#fff;color:var(--muted);padding:7px 13px;border-radius:0;font-weight:600}
   .seg button.on{background:var(--navy);color:#fff}
+  #inrToggle.on{background:var(--teal);color:#fff}
 
   .empty{text-align:center;color:var(--muted);padding:30px 16px}.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
   .note{background:var(--softteal);border:1px solid #c9e6da;border-radius:8px;padding:10px 12px;font-size:13px;color:#15543e}
@@ -122,6 +129,81 @@
   .badge{font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:20px;background:var(--softteal);color:var(--teal-d)}
   .baseline{color:var(--teal-d);font-weight:700}
   .caret{display:inline-block;width:12px;color:var(--teal-d);font-size:11px}
+
+  /* ===== tier badges (rate card) ===== */
+  .tier{font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;white-space:nowrap;letter-spacing:.02em}
+  .tier-niche{background:#ede7fb;color:#5b3fb0}.tier-mid{background:var(--softteal);color:var(--teal-d)}
+  .tier-std{background:var(--soft);color:var(--muted)}.tier-entry{background:#eef4fb;color:#3a6ea8}
+  .delta-up{color:var(--red);font-weight:600;font-size:11.5px}.delta-dn{color:var(--teal-d);font-weight:600;font-size:11.5px}
+  .lpacost{color:var(--muted);font-size:12px}
+
+  /* ===== Playbook ===== */
+  .hero{background:linear-gradient(135deg,var(--navy-d),var(--navy) 55%,#234a86);color:#fff;border-radius:14px;padding:26px 28px;position:relative;overflow:hidden;margin-bottom:18px;box-shadow:var(--shadow-lg)}
+  .hero::after{content:"";position:absolute;top:0;right:0;width:90px;height:100%;background:var(--red);clip-path:polygon(100% 0,100% 100%,0 0);opacity:.9}
+  .hero h2{color:#fff;font-size:23px;margin:0 0 6px;position:relative;z-index:1}
+  .hero p{color:#cdd9ef;max-width:620px;margin:0;position:relative;z-index:1;line-height:1.55}
+  .hero .quickjump{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;position:relative;z-index:1}
+  .hero .quickjump button{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);padding:7px 13px;font-weight:600;font-size:13px;backdrop-filter:blur(2px)}
+  .hero .quickjump button:hover{background:rgba(255,255,255,.22)}
+
+  .lesson{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:20px 22px;margin-bottom:16px}
+  .lesson>h3{font-size:17px;color:var(--navy);display:flex;align-items:center;gap:9px;margin:0 0 4px}
+  .lesson>h3 .ic{width:26px;height:26px;border-radius:7px;background:var(--softteal);color:var(--teal-d);display:flex;align-items:center;justify-content:center;font-size:14px;flex:0 0 auto}
+  .lesson .lead{color:var(--muted);margin:0 0 14px;font-size:14px}
+  .lesson p{line-height:1.6}
+  .lesson ul{line-height:1.7;padding-left:20px;margin:8px 0}
+  .lesson ul li{margin-bottom:5px}
+
+  .formula{background:var(--navy);color:#fff;border-radius:10px;padding:16px 18px;text-align:center;font-size:19px;letter-spacing:.01em;margin:6px 0 4px;font-family:ui-monospace,Consolas,monospace}
+  .formula b{color:#7fe3bd}
+  .formula small{display:block;color:#aebfdb;font-size:12px;margin-top:6px;font-family:Calibri,sans-serif;letter-spacing:0}
+
+  .worked{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:11px;overflow:hidden;margin-top:14px}
+  @media(max-width:720px){.worked{grid-template-columns:1fr}}
+  .worked .ctrls{padding:18px;background:#fbfcfe;border-right:1px solid var(--line)}
+  @media(max-width:720px){.worked .ctrls{border-right:none;border-bottom:1px solid var(--line)}}
+  .worked .out{padding:18px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+  .worked .bigval{font-size:34px;font-weight:800;color:var(--navy);line-height:1}
+  .worked .bigval small{font-size:14px;font-weight:600;color:var(--muted);margin-left:5px}
+  .worked .outrow{display:flex;justify-content:space-between;font-size:14px;padding:7px 0;border-bottom:1px dashed var(--line)}
+  .worked .outrow:last-child{border-bottom:none}
+  .worked .outrow b{color:var(--navy);font-variant-numeric:tabular-nums}
+
+  .ladder{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+  @media(max-width:680px){.ladder{grid-template-columns:1fr 1fr}}
+  .rung{border:1px solid var(--line);border-radius:10px;padding:13px 14px;background:#fbfcfe;border-top:3px solid var(--teal)}
+  .rung .lv{font-weight:800;color:var(--navy);font-size:15px}
+  .rung .mg{font-size:26px;font-weight:800;color:var(--teal-d);line-height:1.1;margin:4px 0 2px}
+  .rung .ds{font-size:12px;color:var(--muted);line-height:1.4}
+
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:780px){.twocol{grid-template-columns:1fr}}
+  .compare{border:1px solid var(--line);border-radius:11px;overflow:hidden}
+  .compare .ch{padding:11px 15px;font-weight:700;color:#fff;font-size:14px}
+  .compare.tierm .ch{background:var(--navy)} .compare.hours .ch{background:var(--teal-d)}
+  .compare .cb{padding:14px 16px}.compare .cb ul{margin:0;padding-left:18px;line-height:1.65;font-size:13.5px}
+  .compare .cb .when{font-size:12.5px;color:var(--muted);margin:0 0 10px;font-style:italic}
+
+  .checklist{list-style:none;padding:0;margin:10px 0 0}
+  .checklist li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px;line-height:1.5}
+  .checklist li:last-child{border-bottom:none}
+  .checklist .mk{flex:0 0 auto;width:20px;height:20px;border-radius:5px;background:var(--softred);color:var(--red);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;margin-top:1px}
+  .checklist b{color:var(--navy)}
+
+  .glossary{columns:2;column-gap:26px}@media(max-width:680px){.glossary{columns:1}}
+  .glossary dt{font-weight:700;color:var(--navy);font-size:13.5px;margin-top:10px;break-after:avoid}
+  .glossary dt:first-child{margin-top:0}
+  .glossary dd{margin:2px 0 0;font-size:13px;color:var(--ink);line-height:1.5;break-inside:avoid}
+
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+  .chip{font-size:12px;font-weight:600;padding:4px 11px;border-radius:20px;background:var(--soft);color:var(--navy)}
+  .chip.g{background:var(--softteal);color:var(--teal-d)}.chip.a{background:var(--softamber);color:#9c6500}.chip.r{background:var(--softred);color:var(--red)}
+
+  .callout{display:flex;gap:11px;background:var(--softteal);border:1px solid #c9e6da;border-radius:10px;padding:12px 14px;margin-top:14px}
+  .callout .ic{flex:0 0 auto;font-size:16px}
+  .callout b{color:#15543e}.callout .tx{font-size:13.5px;color:#1c5a44;line-height:1.5}
+  .callout.warn{background:var(--softamber);border-color:#e8d59a}.callout.warn b,.callout.warn .tx{color:#7a5a00}
+
+  .floor-warn{font-size:11px;color:var(--red);font-weight:700}
 </style>
 </head>
 <body>
@@ -149,7 +231,7 @@
 </header>
 
 <nav class="tabs" id="tabs">
-  <button data-t="start" class="on" onclick="tab('start')">Start here</button>
+  <button data-t="start" class="on" onclick="tab('start')">Playbook</button>
   <button data-t="rate" onclick="tab('rate')">Rate Card</button>
   <button data-t="ctc" onclick="tab('ctc')">CTC &amp; Baselines</button>
   <button data-t="req" onclick="tab('req')">Requirements</button>
@@ -159,65 +241,217 @@
 </nav>
 
 <main>
-  <!-- START -->
+  <!-- PLAYBOOK -->
   <section class="tab on" id="t-start">
-    <div class="card">
-      <h2>This is the home base for staff-augmentation pricing and sourcing</h2>
-      <p class="sub">Everything we've built lives here. Hand this file to anyone on the team — it explains itself and needs no login or internet.</p>
-      <div class="stepper">
-        <div class="step"><span class="num">1</span><b>Intake</b><span>Capture the requirement: role, level, location, type</span></div>
-        <div class="step"><span class="num">2</span><b>Scope &amp; rate card</b><span>Build a quote — cost internally, price for the client</span></div>
-        <div class="step"><span class="num">3</span><b>Source</b><span>Map vendors to the requirement (FTE vs contract)</span></div>
-        <div class="step"><span class="num">4</span><b>Screen &amp; triage</b><span>Green / amber / pass; flag inflation &amp; CV-factory</span></div>
-        <div class="step"><span class="num">5</span><b>Submit</b><span>Anonymized profiles, real org names kept</span></div>
-        <div class="step"><span class="num">6</span><b>Interview &rarr; Offer &rarr; Joined</b><span>Track to close</span></div>
+    <div class="hero">
+      <h2>The staffing playbook</h2>
+      <p>This is the home base for staff-augmentation pricing and sourcing — and the context behind how we price and screen. New to the team? Start here, then the rate card will make sense. Everything lives in this one file; hand it to anyone — it needs no login or internet.</p>
+      <div class="quickjump">
+        <button onclick="jump('l-econ')">How pricing works</button>
+        <button onclick="jump('l-ladder')">The margin ladder</button>
+        <button onclick="jump('l-models')">Engagement models</button>
+        <button onclick="jump('l-source')">Sourcing &amp; triage</button>
+        <button onclick="jump('l-gov')">Government bids</button>
+        <button onclick="jump('l-gloss')">Glossary</button>
       </div>
     </div>
-    <div class="grid2">
-      <div class="card">
-        <h3>How pricing works here</h3>
-        <p class="hint" style="margin:8px 0 0">Rate = Cost &divide; (1 &minus; Margin). We share <b>cost</b> internally so the team can choose a price; we share the resulting <b>rate card (price)</b> with the client to convey scope. The Quote Builder does both from one screen — flip the Internal / Client toggle.</p>
-        <p class="hint">Anchors: generic L1&ndash;L3 land $3,000&ndash;$6,000/mo; PM ~$8,000. Niche skills carry a modest premium (within reason).</p>
+
+    <div class="stepper">
+      <div class="step"><span class="num">1</span><b>Intake</b><span>Capture the requirement: role, level, location, type</span></div>
+      <div class="step"><span class="num">2</span><b>Scope &amp; rate card</b><span>Build a quote — cost internally, price for the client</span></div>
+      <div class="step"><span class="num">3</span><b>Source</b><span>Map vendors to the requirement (FTE vs contract)</span></div>
+      <div class="step"><span class="num">4</span><b>Screen &amp; triage</b><span>Green / amber / pass; flag inflation &amp; CV-factory</span></div>
+      <div class="step"><span class="num">5</span><b>Submit</b><span>Anonymized profiles, real org names kept</span></div>
+      <div class="step"><span class="num">6</span><b>Interview &rarr; Offer &rarr; Joined</b><span>Track to close</span></div>
+    </div>
+
+    <!-- 1. ECONOMICS -->
+    <div class="lesson" id="l-econ">
+      <h3><span class="ic">&#8377;</span>How pricing works — cost, margin, price</h3>
+      <p class="lead">The single idea everything here is built on. Get this and the rate card reads itself.</p>
+      <p>We start from <b>cost</b> — what a resource actually costs us, fully loaded (salary plus overheads), expressed per month. We then choose a <b>margin</b> — the share of the client price we keep. The client <b>price</b> falls out of the two.</p>
+      <div class="formula">Price = Cost &divide; (1 &minus; Margin)<small>NOT Cost &times; (1 + Margin) — that under-prices every line</small></div>
+      <p>The distinction trips people up. A 60% margin does not mean "add 60% to cost." It means cost is only 40% of the price, so you divide by 0.40 — the price is <b>2.5&times;</b> the cost. The higher the margin, the more aggressively price leverages off cost. Try it:</p>
+      <div class="worked">
+        <div class="ctrls">
+          <div class="mctl" style="padding-bottom:2px"><label style="min-width:120px">Monthly cost (USD)</label></div>
+          <input type="range" id="pbCost" min="800" max="6000" step="100" value="2400" oninput="renderPB()" style="accent-color:var(--teal);width:100%">
+          <div class="hint" style="text-align:right;margin-top:2px"><span id="pbCostV">$2,400</span> / month</div>
+          <div class="mctl" style="padding:14px 0 2px"><label style="min-width:120px">Margin</label></div>
+          <input type="range" id="pbMargin" min="30" max="75" step="1" value="60" oninput="renderPB()" style="accent-color:var(--teal);width:100%">
+          <div class="hint" style="text-align:right;margin-top:2px"><span id="pbMarginV">60%</span></div>
+        </div>
+        <div class="out">
+          <div><div class="hint" style="margin-bottom:2px">Client price / month</div><div class="bigval" id="pbPrice">$6,000<small>/mo</small></div></div>
+          <div class="outrow"><span>Multiplier on cost</span><b id="pbMult">2.50&times;</b></div>
+          <div class="outrow"><span>What we keep</span><b id="pbKeep">$3,600</b></div>
+          <div class="outrow"><span>Indicative hourly (160 hrs)</span><b id="pbHr">$37.50</b></div>
+        </div>
       </div>
-      <div class="card">
-        <h3>Principles we work to</h3>
-        <ul class="hint" style="margin:8px 0 0;padding-left:18px;line-height:1.7">
-          <li>Quality of experience over years. Pressure-test AMS/agentic claims.</li>
-          <li>Triage every profile green / amber / pass before it goes to a client.</li>
-          <li>Flag resume inflation, name/location/education gaps, and CV-factory bullet patterns.</li>
-          <li>Format B keeps the client name confidential; anonymized profiles remove only the candidate's name and keep real org names.</li>
-          <li>FTE mandates need FTE-capable agencies — contract-heavy vendors are weak fits.</li>
-        </ul>
+      <div class="callout"><span class="ic">&rarr;</span><div><b>Internal vs client view.</b> <span class="tx">We share <b>cost</b> internally so the team can choose a price; we share the resulting <b>price</b> (the rate card) with the client to convey scope — never the cost or margin. The Rate Card and Quote Builder do both from one screen; just flip the Internal / Client toggle.</span></div></div>
+    </div>
+
+    <!-- 2. LADDER -->
+    <div class="lesson" id="l-ladder">
+      <h3><span class="ic">&#9636;</span>The margin ladder — why juniors carry more</h3>
+      <p class="lead">Margin is not flat across levels. Junior roles carry a higher margin %, senior roles a lower one.</p>
+      <p>Two forces pull in opposite directions. Junior cost is low, so even a high margin keeps the <em>absolute</em> price reasonable and competitive — and junior supply is deep, so we can hold margin. Senior and specialist talent is scarce and expensive; we compress margin to stay winnable on price while the larger cost base still throws off healthy absolute rupees. So the ladder looks like this:</p>
+      <div class="ladder">
+        <div class="rung"><div class="lv">L1 — Junior</div><div class="mg">70%</div><div class="ds">0–3 yrs. Deep supply, low cost, hold margin.</div></div>
+        <div class="rung"><div class="lv">L2 — Mid</div><div class="mg">67%</div><div class="ds">3–6 yrs. The volume tier on most pods.</div></div>
+        <div class="rung"><div class="lv">L3 — Senior IC</div><div class="mg">60%</div><div class="ds">6–10 yrs. Independent delivery.</div></div>
+        <div class="rung"><div class="lv">Lead / Arch / PM</div><div class="mg">58%</div><div class="ds">Scarce, expensive, price-sensitive.</div></div>
+      </div>
+      <p style="margin-top:14px">On top of level, the role's <b>skill tier</b> nudges the underlying cost — niche skills sit a little above the standard cost line, entry/annotation work a little below:</p>
+      <div class="chips">
+        <span class="chip" style="background:#ede7fb;color:#5b3fb0">Niche +10% — Data Science, GenAI / Agentic, SAP S/4HANA, Workday HCM/Fin</span>
+        <span class="chip g">Mid +5% — Data Eng, DevOps, BAs, most functional consultants</span>
+        <span class="chip">Standard — general engineering</span>
+        <span class="chip" style="background:#eef4fb;color:#3a6ea8">Entry −10% — annotation / data QC</span>
+      </div>
+      <div class="callout warn"><span class="ic">!</span><div><b>Keep the premium honest.</b> <span class="tx">Niche skills carry a <em>modest</em> premium within reason — anchors stay L1–L3 $3,000–$6,000/mo, PM ~$8,000. A premium is not a licence to drift away from what the market actually pays.</span></div></div>
+    </div>
+
+    <!-- 3. MODELS -->
+    <div class="lesson" id="l-models">
+      <h3><span class="ic">&#8644;</span>Two engagement models — don't conflate them</h3>
+      <p class="lead">The L1/L2/L3 tier card and an hours-based INR/hr model answer different questions. Use the right one.</p>
+      <div class="twocol">
+        <div class="compare tierm">
+          <div class="ch">Tier model — L1 / L2 / L3</div>
+          <div class="cb">
+            <p class="when">For pre-sale quoting, before CTCs are known.</p>
+            <ul>
+              <li>Prices a <b>resource per month</b> off modelled cost and the margin ladder.</li>
+              <li>Lets you scope a pod and total a contract value before anyone is hired.</li>
+              <li>This is what the <b>Rate Card</b> and <b>Quote Builder</b> tabs run on.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="compare hours">
+          <div class="ch">Hours-based — INR / hour</div>
+          <div class="cb">
+            <p class="when">For active engagements with known CTCs (e.g. the Cummins sprint model).</p>
+            <ul>
+              <li>Bills <b>actual hours</b> against monthly sprint milestones.</li>
+              <li>Built from the real CTC of the person on the seat, not a model.</li>
+              <li>Cleaner for variable effort and FTE-conversion clauses.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:14px">Quick hours-based check — turn a known annual CTC into an indicative bill rate:</p>
+      <div class="worked">
+        <div class="ctrls">
+          <div class="mctl" style="padding-bottom:2px"><label style="min-width:130px">Annual CTC (INR LPA)</label></div>
+          <input type="range" id="hbCtc" min="4" max="60" step="1" value="18" oninput="renderHB()" style="accent-color:var(--teal-d);width:100%">
+          <div class="hint" style="text-align:right;margin-top:2px"><span id="hbCtcV">18</span> LPA</div>
+          <div class="mctl" style="padding:14px 0 2px"><label style="min-width:130px">Margin</label></div>
+          <input type="range" id="hbMargin" min="30" max="75" step="1" value="60" oninput="renderHB()" style="accent-color:var(--teal-d);width:100%">
+          <div class="hint" style="text-align:right;margin-top:2px"><span id="hbMarginV">60%</span> · <span id="hbHrs">160</span> hrs/mo</div>
+        </div>
+        <div class="out">
+          <div><div class="hint" style="margin-bottom:2px">Indicative bill rate</div><div class="bigval" id="hbRate" style="color:var(--teal-d)">&#8377;0<small>/hr</small></div></div>
+          <div class="outrow"><span>Monthly cost to us</span><b id="hbCostMo">&#8377;0</b></div>
+          <div class="outrow"><span>Monthly client price</span><b id="hbPriceMo">&#8377;0</b></div>
+          <div class="outrow"><span>Approx USD / month</span><b id="hbUsd">$0</b></div>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:8px">Uses the FX rate and billable hours from Settings. This is a teaching calculator — for live quoting use the dedicated tabs.</p>
+    </div>
+
+    <!-- 4. SOURCING & TRIAGE -->
+    <div class="lesson" id="l-source">
+      <h3><span class="ic">&#9678;</span>Sourcing &amp; triage — quality over years</h3>
+      <p class="lead">Vendor fit and candidate integrity are where margin is protected or lost.</p>
+      <div class="twocol">
+        <div>
+          <p><b>Match the vendor to the mandate.</b> FTE mandates need FTE-capable agencies; contract-heavy vendors are weak fits for permanent roles. The Vendors tab tags every agency FTE / Contract / Mixed and Green / Amber / Pass so you don't send an FTE search to a temp shop.</p>
+          <p><b>Triage every profile before it reaches a client.</b></p>
+          <div class="chips">
+            <span class="chip g">Green — submit</span><span class="chip a">Amber — clarify first</span><span class="chip r">Pass — do not send</span>
+          </div>
+          <p style="margin-top:12px">Weight the <em>quality</em> of experience over raw years. Pressure-test AMS and agentic-AI claims — these are the ones most often inflated.</p>
+        </div>
+        <div>
+          <p><b>Integrity flags to surface proactively:</b></p>
+          <ul>
+            <li><b>Resume inflation</b> — scope or seniority that doesn't match the timeline.</li>
+            <li><b>Name / location / education mismatches</b> across CV, profile and ID.</li>
+            <li><b>CV-factory patterns</b> — near-identical bullet language across candidates from one vendor. Reject and give the vendor feedback.</li>
+          </ul>
+          <div class="callout"><span class="ic">&#9719;</span><div><b>Submission rule.</b> <span class="tx">Anonymized profiles remove only the candidate's <em>name</em> — real organization and client names stay (Format B keeps the <em>client</em> name confidential, which is a separate thing).</span></div></div>
+        </div>
       </div>
     </div>
-    <div class="card">
-      <h3>What each tab does</h3>
-      <div class="row" style="margin-top:10px">
-        <div><b>Rate Card</b><p class="hint">The full role catalog with cost and price. Set a global margin and flip cost/price.</p><button class="btn soft sm" onclick="tab('rate')">Open Rate Card</button></div>
+
+    <!-- 5. GOVERNMENT -->
+    <div class="lesson" id="l-gov">
+      <h3><span class="ic">&#9878;</span>Government &amp; sub-contracting — the hard disqualifiers</h3>
+      <p class="lead">On government ERP pipeline work (e.g. as a Wipro sub-contractor), three filters knock bids out before capability is even read. Check them first.</p>
+      <ul class="checklist">
+        <li><span class="mk">1</span><div><b>Land-border country ownership (GFR Rule 144(xi)).</b> Bidders with beneficial ownership from a land-bordering country need prior registration. Confirm the ownership chain is clean before investing in a response.</div></li>
+        <li><span class="mk">2</span><div><b>CERT-In empanelment / certification.</b> Many bids require CERT-In empanelled security testing and ISO 27001. This is a near-term gap to close (VAPT vendor scoping in progress) and a recurring eligibility blocker.</div></li>
+        <li><span class="mk">3</span><div><b>Permanent payroll requirement.</b> Some mandates require resources on permanent payroll, not contract — which disqualifies a staff-aug posture outright. Read the manpower clause early.</div></li>
+      </ul>
+      <div class="callout warn"><span class="ic">!</span><div><b>Know our lane.</b> <span class="tx">We're not positioned to lead national-level DPI architecture engagements, but we can own specific deliverables under a larger firm. Credible module claims: HRMS, Finance &amp; Accounts, Procurement / Inventory.</span></div></div>
+    </div>
+
+    <!-- 6. TABS + GLOSSARY -->
+    <div class="lesson">
+      <h3><span class="ic">&#8862;</span>What each tab does</h3>
+      <div class="row" style="margin-top:6px">
+        <div><b>Rate Card</b><p class="hint">The full role catalog with cost and price. Choose a margin basis and flip cost/price.</p><button class="btn soft sm" onclick="tab('rate')">Open Rate Card</button></div>
         <div><b>CTC &amp; Baselines</b><p class="hint">Drop in vendor CTCs to average cost by position and vendor, and lock validated baselines.</p><button class="btn soft sm" onclick="tab('ctc')">Open CTC &amp; Baselines</button></div>
         <div><b>Requirements</b><p class="hint">Log open roles and their candidate pipeline. Slicers keep it clean.</p><button class="btn soft sm" onclick="tab('req')">Open Requirements</button></div>
         <div><b>Quote Builder</b><p class="hint">Make a rate card for one requirement, adjusting margins by role or category.</p><button class="btn soft sm" onclick="tab('quote')">Open Quote Builder</button></div>
         <div><b>Vendors</b><p class="hint">The vendor roster, tagged FTE / contract, mapped to your sourcing.</p><button class="btn soft sm" onclick="tab('vendors')">Open Vendors</button></div>
-        <div><b>Prompts</b><p class="hint">Ready prompts for JDs, vendor emails, anonymized profiles, screening notes — paste into Claude.</p><button class="btn soft sm" onclick="tab('prompts')">Open Prompts</button></div>
+        <div><b>Prompts</b><p class="hint">Ready prompts for JDs, vendor emails, anonymized profiles, screening notes.</p><button class="btn soft sm" onclick="tab('prompts')">Open Prompts</button></div>
       </div>
+    </div>
+
+    <div class="lesson" id="l-gloss">
+      <h3><span class="ic">A</span>Glossary</h3>
+      <p class="lead">The shorthand that shows up across the tabs.</p>
+      <dl class="glossary">
+        <dt>CTC</dt><dd>Cost to company — a candidate's total annual package. Our cost basis for a seat.</dd>
+        <dt>LPA</dt><dd>Lakhs per annum (₹1 lakh = ₹100,000). The unit Indian CTCs are quoted in.</dd>
+        <dt>Cost</dt><dd>Fully-loaded monthly cost of a resource to us, before margin.</dd>
+        <dt>Margin</dt><dd>Share of the client price we keep. Price = Cost ÷ (1 − Margin).</dd>
+        <dt>Price / rate</dt><dd>What the client pays per resource. The rate card is a list of prices.</dd>
+        <dt>Bill rate</dt><dd>Price expressed per hour (price ÷ billable hours, default 160/mo).</dd>
+        <dt>Baseline</dt><dd>A validated cost locked from observed vendor CTCs; overrides the model (teal dot).</dd>
+        <dt>FTE</dt><dd>Full-time employee — a permanent hire, vs a contract/temp resource.</dd>
+        <dt>Empanelment</dt><dd>A vendor formally approved onto our roster for mandates.</dd>
+        <dt>Bench</dt><dd>Available, not-yet-deployed resources a vendor or we can draw on.</dd>
+        <dt>SOW</dt><dd>Statement of work — scope, deliverables and terms for an engagement.</dd>
+        <dt>Retainer</dt><dd>A fixed recurring fee for ongoing availability (e.g. domain consultants).</dd>
+        <dt>AMS</dt><dd>Application managed services — ongoing support/maintenance of a deployed app.</dd>
+        <dt>VAPT</dt><dd>Vulnerability assessment &amp; penetration testing — a security gate for gov bids.</dd>
+        <dt>GFR 144(xi)</dt><dd>The General Financial Rules clause on land-border-country bidder registration.</dd>
+      </dl>
     </div>
   </section>
 
   <!-- RATE CARD -->
   <section class="tab" id="t-rate">
-    <h2>Rate Card</h2>
-    <p class="sub">The full catalog. Cost is modelled; price falls out of the margin. Use this as the reference; build client-specific versions in the Quote Builder.</p>
+    <div class="tabhd"><h2>Rate Card</h2>
+    <p class="sub">The full catalog. Cost is modelled (or locked from observed CTCs); price falls out of the margin. Use this as the reference; build client-specific versions in the Quote Builder.</p></div>
     <div class="card">
       <div class="row" style="align-items:flex-end">
         <div style="max-width:230px"><label>View</label>
           <div class="seg"><button id="rcInt" class="on" onclick="setRcView('internal')">Internal (cost + price)</button><button id="rcCli" onclick="setRcView('client')">Client (price)</button></div>
         </div>
-        <div style="max-width:230px"><label>Category</label><select id="rcCat" onchange="renderRate()"></select></div>
-        <div style="max-width:300px"><label>Search role</label><input id="rcSearch" oninput="renderRate()" placeholder="e.g. Workday, AI, SAP"></div>
-        <div class="mctl" style="flex:1;min-width:240px"><label>Global margin</label><input type="range" min="30" max="75" id="rcMargin" value="60" oninput="renderRate()"><span class="mval" id="rcMarginV">60%</span></div>
+        <div style="max-width:210px"><label>Margin basis</label>
+          <select id="rcBasis" onchange="renderRate()"><option value="ladder">Level ladder (70/67/60/58%)</option><option value="flat">Flat margin %</option></select></div>
+        <div style="max-width:200px"><label>Category</label><select id="rcCat" onchange="renderRate()"></select></div>
+        <div style="max-width:240px"><label>Search role</label><input id="rcSearch" oninput="renderRate()" placeholder="e.g. Workday, AI, SAP"></div>
+        <div class="mctl" id="rcMarginWrap" style="flex:1;min-width:200px;display:none"><label>Flat margin</label><input type="range" min="30" max="75" id="rcMargin" value="60" oninput="renderRate()"><span class="mval" id="rcMarginV">60%</span></div>
+        <div style="align-self:flex-end"><button id="inrToggle" class="btn soft sm" onclick="toggleInr()" title="Toggle between USD and INR display">INR</button></div>
+        <div style="align-self:flex-end;flex:0"><button class="btn soft sm" onclick="exportRate()" title="Export the current view to CSV">Export CSV</button></div>
       </div>
     </div>
-    <div class="card pad0"><div style="overflow:auto;max-height:62vh"><table id="rcTable"></table></div></div>
+    <div class="card pad0"><div style="overflow:auto;max-height:64vh"><table id="rcTable"></table></div></div>
   </section>
 
   <!-- CTC & BASELINES -->
@@ -294,6 +528,7 @@
         <div style="max-width:240px"><label>View</label>
           <div class="seg"><button id="qInt" class="on" onclick="setQView('internal')">Internal</button><button id="qCli" onclick="setQView('client')">Client</button></div>
         </div>
+        <div style="align-self:flex-end"><button class="btn soft sm" onclick="toggleInr()" title="Toggle INR/USD" style="min-width:52px">INR</button></div>
       </div>
     </div>
     <div class="grid2">
@@ -405,6 +640,7 @@
 <div class="scrim" id="settingsScrim"><div class="modal"><div class="mhd"><h3>Settings</h3><button class="x" onclick="close_('settingsScrim')">&times;</button></div>
   <div class="mbd">
     <div class="mctl"><label>USD / INR FX rate</label><input type="number" id="set_fx" style="max-width:120px"><span class="hint">rupees per dollar (default 90)</span></div>
+    <div class="mctl"><label>Billable hours / month</label><input type="number" id="set_hours" style="max-width:120px"><span class="hint">drives hourly rates (default 160)</span></div>
     <hr style="border:none;border-top:1px solid var(--line);margin:4px 0">
     <div>
       <label>GitHub personal access token</label>
@@ -427,6 +663,7 @@
 /* ===== cost model (mirrors the Excel rate card) ===== */
 const BASE={L1:900,L2:1500,L3:2400};
 const LEVELMARGIN={L1:.70,L2:.67,L3:.60,Lead:.58,Senior:.58,Architect:.58,Program:.58,PM:.58,Advisory:.58};
+const MARGIN_FLOOR=.50; /* warn below this on quote lines */
 const LOW=new Set(["Annotation / Data QC Analyst"]);
 const MID=new Set(["API / Integration Engineer","Data Engineer","Data Analyst","BI / Data Visualization (Power BI)","DevOps / Cloud Engineer","Platform Engineer","Site Reliability Engineer (SRE)","Cloud Migration Engineer","QA Automation Engineer (Selenium / Cypress / Playwright)","Technical Business Analyst","UX Researcher","Product Designer","Design System Designer","RPA Developer (UiPath / Automation Anywhere)","Conversational AI / NLP Engineer","Document AI / IDP Engineer (OCR + NLP)","MLOps Engineer","Salesforce Administrator","SAP ABAP Developer","SAP Basis / Technical Consultant","Workday Reporting / Technical Analyst","ERP Functional Consultant (HRMS / Finance / Procurement)","Data Acquisition / Web Scraping Engineer","Pricing / Competitive Intelligence Analyst"]);
 const NICHE=new Set(["Data Scientist","AI / ML Engineer","Agentic AI Engineer (LangGraph / CrewAI)","GenAI Engineer (LLM / RAG)","Computer Vision Engineer","Security Engineer","DevSecOps Engineer","Salesforce Developer (Apex / LWC)","Salesforce Functional Consultant","SAP Functional Consultant (FICO / MM / SD)","SAP S/4HANA Consultant","SAP SuccessFactors Consultant","Workday HCM Consultant","Workday Financials Consultant","Workday Integration Consultant (Studio / PECI)"]);
@@ -443,12 +680,24 @@ function costOf(role,level){const b=DB.baselines&&DB.baselines[role+'||'+level];
 const isBaseline=(role,level)=>!!(DB.baselines&&DB.baselines[role+'||'+level]);
 const dMargin=lv=>LEVELMARGIN[lv]??.58;
 const priceOf=(cost,m)=>Math.round(cost/(1-m));
-const usd=n=>'$'+Math.round(n).toLocaleString();
+let showInr=false;
+const usd=n=>showInr?'₹'+Math.round(n*fx()).toLocaleString():'$'+Math.round(n).toLocaleString();
+const inrLabel=()=>showInr?'INR':'USD';
 const fx=()=>(DB.settings&&+DB.settings.fx)||90;
+const hrs=()=>(DB.settings&&+DB.settings.hours)||160;
 function ctcToUsdMo(amt,unit){const f=fx();if(unit==='inr_lpa')return amt*1e5/f/12;if(unit==='inr_mo')return amt/f;if(unit==='usd_yr')return amt/12;return amt;}
+/* skill-tier label/badge from the cost multiplier */
+function tierInfo(role){const t=tier(role);
+  if(t>=1.10)return{cls:'tier-niche',label:'Niche +10%'};
+  if(t>=1.05)return{cls:'tier-mid',label:'Mid +5%'};
+  if(t<=0.90)return{cls:'tier-entry',label:'Entry −10%'};
+  return{cls:'tier-std',label:'Standard'};}
+/* what an annual cost (USD/mo basis) implies as an INR-LPA package — a bridge to vendor CTCs */
+const lpaOfCostUsdMo=c=>(c*12*fx())/1e5;
+function modelCost(role,lv){const M=CAT[role];if(!M)return 0;return M.type=='ic'?Math.round(BASE[lv]*tier(role)/10)*10:M.cost;}
 
 /* ===== state ===== */
-let DB={requirements:[],candidates:[],vendors:[],ctc:[],baselines:{},settings:{fx:90},quote:null};
+let DB={requirements:[],candidates:[],vendors:[],ctc:[],baselines:{},settings:{fx:90,hours:160},quote:null};
 let sel=null,editReq=null,editCand=null,editVendor=null,rcView='internal';
 const KEY="ns_staffing_ws_v2",uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const $=id=>document.getElementById(id),val=id=>($(id).value||'').trim();
@@ -462,18 +711,23 @@ function fill(id,arr,all){const e=$(id),cur=e.value;e.innerHTML=(all?`<option va
 /* ===== tabs ===== */
 function tab(name){document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===name));
   document.querySelectorAll('section.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+name));
-  if(name==='rate')renderRate();if(name==='ctc')renderCTC();if(name==='req')renderReq();if(name==='quote')renderQuote();if(name==='vendors')renderVendors();if(name==='prompts')renderPrompts();window.scrollTo(0,0);}
+  if(name==='start'){renderPB();renderHB();}if(name==='rate')renderRate();if(name==='ctc')renderCTC();if(name==='req')renderReq();if(name==='quote')renderQuote();if(name==='vendors')renderVendors();if(name==='prompts')renderPrompts();window.scrollTo(0,0);}
 
 /* ===== rate card ===== */
 function setRcView(v){rcView=v;$('rcInt').classList.toggle('on',v==='internal');$('rcCli').classList.toggle('on',v==='client');renderRate();}
+function toggleInr(){showInr=!showInr;$('inrToggle').classList.toggle('on',showInr);$('inrToggle').textContent=showInr?'INR ✓':'INR';renderRate();renderQuote();renderCTC();}
 function renderRate(){
   fill('rcCat',CATORDER,'All categories');
-  const m=(+$('rcMargin').value)/100;$('rcMarginV').textContent=Math.round(m*100)+'%';
+  const basis=$('rcBasis')?$('rcBasis').value:'ladder';
+  $('rcMarginWrap').style.display=basis==='flat'?'flex':'none';
+  const mFlat=(+$('rcMargin').value)/100;$('rcMarginV').textContent=Math.round(mFlat*100)+'%';
+  const marginFor=lv=>basis==='flat'?mFlat:dMargin(lv);
   const fc=val('rcCat'),q=val('rcSearch').toLowerCase();
+  const cur=inrLabel(),H=hrs();
   const head=rcView==='internal'
-    ?`<tr><th>Role</th><th>Level</th><th class="num">Cost /mo</th><th class="num">Margin</th><th class="num">Price /mo</th><th class="num">Hourly</th><th class="num">Annual</th></tr>`
-    :`<tr><th>Role</th><th>Level</th><th class="num">Monthly</th><th class="num">Hourly</th><th class="num">Annual</th></tr>`;
-  let html=head,cols=rcView==='internal'?7:5;
+    ?`<tr><th>Role</th><th>Level</th><th>Tier</th><th class="num">Cost /mo (${cur})</th><th class="num">≈ CTC (LPA)</th><th class="num">Margin</th><th class="num">Price /mo (${cur})</th><th class="num">Hourly</th><th class="num">Annual</th></tr>`
+    :`<tr><th>Role</th><th>Level</th><th>Tier</th><th class="num">Monthly (${cur})</th><th class="num">Hourly</th><th class="num">Annual</th></tr>`;
+  let html=head,cols=rcView==='internal'?9:6;
   CATORDER.forEach(cat=>{
     if(fc&&fc!==cat)return;
     const rows=[];
@@ -481,12 +735,61 @@ function renderRate(){
     SR.filter(x=>x[0]===cat).forEach(([,role,lv])=>{if(q&&!role.toLowerCase().includes(q))return;rows.push([role,lv]);});
     if(!rows.length)return;
     html+=`<tr class="catrow"><td colspan="${cols}">${esc(cat)}</td></tr>`;
-    rows.forEach(([role,lv])=>{const c=costOf(role,lv),p=priceOf(c,m);
+    rows.forEach(([role,lv])=>{const c=costOf(role,lv),m=marginFor(lv),p=priceOf(c,m);
+      const ti=tierInfo(role),tcell=`<span class="tier ${ti.cls}">${ti.label}</span>`;
+      let costCell=usd(c);
+      if(isBaseline(role,lv)){const mdl=modelCost(role,lv),d=mdl?Math.round((c-mdl)/mdl*100):0;
+        const dl=d>0?`<span class="delta-up" title="Above model"> +${d}%</span>`:d<0?`<span class="delta-dn" title="Below model"> ${d}%</span>`:'';
+        costCell=`<span class="baseline" title="Validated baseline from observed CTCs (model ${usd(mdl)})">&bull;</span> ${usd(c)}${dl}`;}
       html+=rcView==='internal'
-        ?`<tr><td>${esc(role)}</td><td>${lv}</td><td class="num">${isBaseline(role,lv)?'<span class="baseline" title="Validated baseline from observed CTCs">&bull;</span> ':''}${usd(c)}</td><td class="num">${Math.round(m*100)}%</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(p/160)}</td><td class="num">${usd(p*12)}</td></tr>`
-        :`<tr><td>${esc(role)}</td><td>${lv}</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(p/160)}</td><td class="num">${usd(p*12)}</td></tr>`;});
+        ?`<tr><td>${esc(role)}</td><td>${lv}</td><td>${tcell}</td><td class="num">${costCell}</td><td class="num lpacost" title="Annual cost expressed as an INR package — sanity-check against vendor CTCs">${lpaOfCostUsdMo(c).toFixed(1)}</td><td class="num">${Math.round(m*100)}%</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(p/H)}</td><td class="num">${usd(p*12)}</td></tr>`
+        :`<tr><td>${esc(role)}</td><td>${lv}</td><td>${tcell}</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(p/H)}</td><td class="num">${usd(p*12)}</td></tr>`;});
   });
   $('rcTable').innerHTML=html;
+}
+function exportRate(){
+  const basis=$('rcBasis')?$('rcBasis').value:'ladder';const mFlat=(+$('rcMargin').value)/100;
+  const marginFor=lv=>basis==='flat'?mFlat:dMargin(lv);const H=hrs();
+  const fc=val('rcCat'),q=val('rcSearch').toLowerCase();
+  const head=rcView==='internal'
+    ?['Category','Role','Level','Tier','Cost USD/mo','Approx CTC LPA','Margin %','Price USD/mo','Hourly USD','Annual USD']
+    :['Category','Role','Level','Tier','Monthly USD','Hourly USD','Annual USD'];
+  const out=[head];
+  CATORDER.forEach(cat=>{if(fc&&fc!==cat)return;
+    const rows=[];
+    IC.filter(x=>x[0]===cat).forEach(([,role])=>{if(q&&!role.toLowerCase().includes(q))return;['L1','L2','L3'].forEach(lv=>rows.push([role,lv]));});
+    SR.filter(x=>x[0]===cat).forEach(([,role,lv])=>{if(q&&!role.toLowerCase().includes(q))return;rows.push([role,lv]);});
+    rows.forEach(([role,lv])=>{const c=costOf(role,lv),m=marginFor(lv),p=priceOf(c,m),ti=tierInfo(role).label;
+      out.push(rcView==='internal'
+        ?[cat,role,lv,ti,Math.round(c),lpaOfCostUsdMo(c).toFixed(1),Math.round(m*100),p,Math.round(p/H),p*12]
+        :[cat,role,lv,ti,p,Math.round(p/H),p*12]);});});
+  if(out.length<2){toast('Nothing to export');return;}
+  dl((rcView==='internal'?'rate-card-internal':'rate-card-client')+'.csv',out.map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv');toast('Exported');
+}
+
+/* ===== playbook (educational tab) ===== */
+function jump(id){const el=$(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+function renderPB(){
+  if(!$('pbCost'))return;
+  const c=+$('pbCost').value,m=(+$('pbMargin').value)/100,p=Math.round(c/(1-m));
+  $('pbCostV').textContent='$'+c.toLocaleString();
+  $('pbMarginV').textContent=Math.round(m*100)+'%';
+  $('pbPrice').innerHTML='$'+p.toLocaleString()+'<small>/mo</small>';
+  $('pbMult').textContent=(1/(1-m)).toFixed(2)+'×';
+  $('pbKeep').textContent='$'+(p-c).toLocaleString();
+  $('pbHr').textContent='$'+(p/160).toFixed(2);
+}
+function renderHB(){
+  if(!$('hbCtc'))return;
+  const lpa=+$('hbCtc').value,m=(+$('hbMargin').value)/100,H=hrs(),f=fx();
+  const costMoInr=lpa*1e5/12, priceMoInr=Math.round(costMoInr/(1-m));
+  $('hbCtcV').textContent=lpa;
+  $('hbMarginV').textContent=Math.round(m*100)+'%';
+  $('hbHrs').textContent=H;
+  $('hbRate').innerHTML='₹'+Math.round(priceMoInr/H).toLocaleString()+'<small>/hr</small>';
+  $('hbCostMo').textContent='₹'+Math.round(costMoInr).toLocaleString();
+  $('hbPriceMo').textContent='₹'+priceMoInr.toLocaleString();
+  $('hbUsd').textContent='$'+Math.round(priceMoInr/f).toLocaleString();
 }
 
 /* ===== requirements ===== */
@@ -567,21 +870,24 @@ function renderQuote(){
   const cats=uniq(q.lines.map(l=>CAT[l.role].cat));
   $('qCatMargins').innerHTML=cats.length?cats.map(c=>{const v=q.catMargins[c]!=null?Math.round(q.catMargins[c]*100):'';return `<div class="mctl"><label title="Override margin for all ${esc(c)} lines">${esc(c)}</label><input type="range" min="30" max="75" value="${v||60}" oninput="setCatMargin('${esc(c)}',this.value)"><span class="mval">${v!==''?v+'%':'auto'}</span>${v!==''?`<button class="btn soft sm" onclick="clearCatMargin('${esc(c)}')">×</button>`:''}</div>`;}).join(''):'<p class="hint">Add a line to set category margins.</p>';
   const client=q.view==='client';
-  const head=client?`<tr><th>Role</th><th>Level</th><th class="num">Qty</th><th class="num">Monthly</th><th class="num">Ext. monthly</th><th></th></tr>`
-    :`<tr><th>Role</th><th>Level</th><th class="num">Qty</th><th class="num">Cost</th><th class="num">Margin</th><th class="num">Price</th><th class="num">Ext. cost</th><th class="num">Ext. price</th><th></th></tr>`;
+  const cur=inrLabel();
+  const head=client?`<tr><th>Role</th><th>Level</th><th class="num">Qty</th><th class="num">Monthly (${cur})</th><th class="num">Ext. monthly</th><th></th></tr>`
+    :`<tr><th>Role</th><th>Level</th><th class="num">Qty</th><th class="num">Cost (${cur})</th><th class="num">Margin</th><th class="num">Price (${cur})</th><th class="num">Ext. cost</th><th class="num">Ext. price</th><th></th></tr>`;
   let html=head,tCost=0,tPrice=0,tCV=0;
   if(!q.lines.length)html+=`<tr><td colspan="${client?6:9}"><div class="empty"><b>No lines yet</b>Add roles above to build the rate card.</div></td></tr>`;
   q.lines.forEach((ln,i)=>{const c=costOf(ln.role,ln.level),m=lineMargin(ln),p=priceOf(c,m);
     tCost+=c*ln.qty;tPrice+=p*ln.qty;tCV+=p*ln.qty*(ln.months||0);
-    const mo=`<input style="width:62px;padding:4px 6px" value="${ln.mo!=null?Math.round(ln.mo*100):''}" placeholder="${Math.round(m*100)}" onchange="setLineMargin(${i},this.value)" title="Override %">`;
+    const lowm=m<MARGIN_FLOOR;
+    const mo=`<input style="width:62px;padding:4px 6px" value="${ln.mo!=null?Math.round(ln.mo*100):''}" placeholder="${Math.round(m*100)}" onchange="setLineMargin(${i},this.value)" title="Override %">${lowm?' <span class="floor-warn" title="Below the '+Math.round(MARGIN_FLOOR*100)+'% margin floor">▲ low</span>':''}`;
     html+=client
       ?`<tr><td>${esc(ln.role)}</td><td>${ln.level}</td><td class="num">${ln.qty}</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(p*ln.qty)}</td><td><button class="btn soft sm" onclick="rmLine(${i})">×</button></td></tr>`
       :`<tr><td>${esc(ln.role)}</td><td>${ln.level}</td><td class="num">${ln.qty}</td><td class="num">${usd(c)}</td><td class="num">${mo}</td><td class="num"><b>${usd(p)}</b></td><td class="num">${usd(c*ln.qty)}</td><td class="num">${usd(p*ln.qty)}</td><td><button class="btn soft sm" onclick="rmLine(${i})">×</button></td></tr>`;});
   $('qTable').innerHTML=html;
   const blended=tPrice?Math.round((1-tCost/tPrice)*100):0;
+  const blendWarn=q.lines.length&&blended<Math.round(MARGIN_FLOOR*100)?` <span class="floor-warn">▲ below ${Math.round(MARGIN_FLOOR*100)}% floor</span>`:'';
   $('qTotals').innerHTML=q.lines.length?(client
     ?`<div class="row"><div><div class="hint">Total monthly</div><b style="font-size:20px;color:var(--navy)">${usd(tPrice)}</b></div><div><div class="hint">Contract value (incl. months)</div><b style="font-size:20px;color:var(--navy)">${usd(tCV)}</b></div></div>`
-    :`<div class="row"><div><div class="hint">Total monthly cost</div><b style="font-size:18px">${usd(tCost)}</b></div><div><div class="hint">Total monthly price</div><b style="font-size:18px;color:var(--teal-d)">${usd(tPrice)}</b></div><div><div class="hint">Blended margin</div><b style="font-size:18px">${blended}%</b></div><div><div class="hint">Contract value</div><b style="font-size:18px">${usd(tCV)}</b></div></div>`):'';
+    :`<div class="row"><div><div class="hint">Total monthly cost</div><b style="font-size:18px">${usd(tCost)}</b></div><div><div class="hint">Total monthly price</div><b style="font-size:18px;color:var(--teal-d)">${usd(tPrice)}</b></div><div><div class="hint">Blended margin</div><b style="font-size:18px">${blended}%${blendWarn}</b></div><div><div class="hint">Contract value</div><b style="font-size:18px">${usd(tCV)}</b></div></div>`):'';
   persist();
 }
 function setCatMargin(c,v){Q().catMargins[c]=(+v)/100;renderQuote();}
@@ -595,18 +901,18 @@ function quoteFromReq(){const r=DB.requirements.find(x=>x.id===sel);if(!r)return
 function exportQuote(kind){const q=Q();if(!q.lines.length){toast('No lines');return;}
   let head,rows;
   if(kind==='client'){head=['Client','Role','Level','Qty','Monthly (USD)','Hourly (USD)','Annual (USD)','Ext. monthly (USD)'];
-    rows=q.lines.map(ln=>{const p=priceOf(costOf(ln.role,ln.level),lineMargin(ln));return [q.client,ln.role,ln.level,ln.qty,Math.round(p),Math.round(p/160),Math.round(p*12),Math.round(p*ln.qty)];});}
+    rows=q.lines.map(ln=>{const p=priceOf(costOf(ln.role,ln.level),lineMargin(ln));return [q.client,ln.role,ln.level,ln.qty,Math.round(p),Math.round(p/hrs()),Math.round(p*12),Math.round(p*ln.qty)];});}
   else{head=['Client','Role','Level','Qty','Cost (USD)','Margin %','Price (USD)','Ext. cost','Ext. price'];
     rows=q.lines.map(ln=>{const c=costOf(ln.role,ln.level),m=lineMargin(ln),p=priceOf(c,m);return [q.client,ln.role,ln.level,ln.qty,c,Math.round(m*100),p,c*ln.qty,p*ln.qty];});}
   dl((kind==='client'?'client-rate-card':'internal-cost-sheet')+'.csv',[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv');toast('Exported');}
 function printQuote(){const q=Q();if(!q.lines.length){toast('No lines');return;}
-  const rows=q.lines.map(ln=>{const p=priceOf(costOf(ln.role,ln.level),lineMargin(ln));return `<tr><td>${esc(ln.role)}</td><td>${ln.level}</td><td style="text-align:center">${ln.qty}</td><td style="text-align:right">${usd(p)}</td><td style="text-align:right">${usd(p/160)}</td><td style="text-align:right">${usd(p*12)}</td></tr>`;}).join('');
+  const rows=q.lines.map(ln=>{const p=priceOf(costOf(ln.role,ln.level),lineMargin(ln));return `<tr><td>${esc(ln.role)}</td><td>${ln.level}</td><td style="text-align:center">${ln.qty}</td><td style="text-align:right">${usd(p)}</td><td style="text-align:right">${usd(p/hrs())}</td><td style="text-align:right">${usd(p*12)}</td></tr>`;}).join('');
   const w=window.open('','_blank');if(!w){toast('Allow pop-ups to print');return;}
-  w.document.write(`<html><head><title>Rate Card — ${esc(q.client||'')}</title><style>body{font-family:Calibri,Arial,sans-serif;color:#1d2433;padding:34px}h1{color:#1B3A6B;margin:0}.sub{color:#6b7588;margin:4px 0 18px}table{width:100%;border-collapse:collapse}th{background:#1B3A6B;color:#fff;text-align:left;padding:9px;font-size:13px}td{padding:8px 9px;border-bottom:1px solid #e3e7ef;font-size:13px}th:nth-child(n+3),td:nth-child(n+3){text-align:right}.note{color:#6b7588;font-size:12px;margin-top:16px}</style></head><body><h1>Netscribes — Rate Card</h1><div class="sub">${esc(q.client||'')}${q.title?' · '+esc(q.title):''}</div><table><thead><tr><th>Role</th><th>Level</th><th>Qty</th><th>Monthly</th><th>Hourly</th><th>Annual</th></tr></thead><tbody>${rows}</tbody></table><div class="note">All rates in USD per resource. Indicative, valid 90 days, exclusive of applicable taxes. Monthly rate based on 160 billable hours.</div></body></html>`);
+  w.document.write(`<html><head><title>Rate Card — ${esc(q.client||'')}</title><style>body{font-family:Calibri,Arial,sans-serif;color:#1d2433;padding:34px}h1{color:#1B3A6B;margin:0}.sub{color:#6b7588;margin:4px 0 18px}table{width:100%;border-collapse:collapse}th{background:#1B3A6B;color:#fff;text-align:left;padding:9px;font-size:13px}td{padding:8px 9px;border-bottom:1px solid #e3e7ef;font-size:13px}th:nth-child(n+3),td:nth-child(n+3){text-align:right}.note{color:#6b7588;font-size:12px;margin-top:16px}</style></head><body><h1>Netscribes — Rate Card</h1><div class="sub">${esc(q.client||'')}${q.title?' · '+esc(q.title):''}</div><table><thead><tr><th>Role</th><th>Level</th><th>Qty</th><th>Monthly</th><th>Hourly</th><th>Annual</th></tr></thead><tbody>${rows}</tbody></table><div class="note">All rates in USD per resource. Indicative, valid 90 days, exclusive of applicable taxes. Monthly rate based on ${hrs()} billable hours.</div></body></html>`);
   w.document.close();setTimeout(()=>w.print(),300);}
 function quotePrompt(){const q=Q();if(!q.lines.length){toast('No lines');return;}
   const lines=q.lines.map(ln=>{const p=priceOf(costOf(ln.role,ln.level),lineMargin(ln));return `- ${ln.role} (${ln.level}) ×${ln.qty} — ${usd(p)}/mo`;}).join('\n');
-  showPrompt('Rate-card document prompt',`Turn the following into a polished, client-facing rate card document in the Netscribes house style (navy/teal brand, Calibri). Client: ${q.client||'[client]'}${q.title?' · '+q.title:''}. Show role, level, quantity and monthly rate in USD; add a short scope paragraph framing this as a managed delivery pod. Do not show cost or margin. Add the standard footer: rates indicative, valid 90 days, exclusive of taxes, 160 billable hours/month.\n\nLines:\n${lines}\n\nTotal monthly: ${usd(q.lines.reduce((a,ln)=>a+priceOf(costOf(ln.role,ln.level),lineMargin(ln))*ln.qty,0))}.`,
+  showPrompt('Rate-card document prompt',`Turn the following into a polished, client-facing rate card document in the Netscribes house style (navy/teal brand, Calibri). Client: ${q.client||'[client]'}${q.title?' · '+q.title:''}. Show role, level, quantity and monthly rate in USD; add a short scope paragraph framing this as a managed delivery pod. Do not show cost or margin. Add the standard footer: rates indicative, valid 90 days, exclusive of taxes, ${hrs()} billable hours/month.\n\nLines:\n${lines}\n\nTotal monthly: ${usd(q.lines.reduce((a,ln)=>a+priceOf(costOf(ln.role,ln.level),lineMargin(ln))*ln.qty,0))}.`,
   'Paste into your Claude project chat to get a branded DOCX/PDF rate card.');}
 
 /* ===== vendors ===== */
@@ -735,7 +1041,7 @@ function showPrompt(t,x,n){$('promptTitle').textContent=t;$('promptText').textCo
 function copyPrompt(){navigator.clipboard?.writeText(_p).then(()=>toast('Copied')).catch(()=>{const a=document.createElement('textarea');a.value=_p;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();toast('Copied');});}
 function exportJSON(){dl('data.json',JSON.stringify(DB,null,2),'application/json');toast('Saved data.json — commit it to the repo to share');}
 function importJSON(){$('fileIn').click();}
-function mergeShape(d){return Object.assign({requirements:[],candidates:[],vendors:[],ctc:[],baselines:{},settings:{fx:90},quote:null},d);}
+function mergeShape(d){return Object.assign({requirements:[],candidates:[],vendors:[],ctc:[],baselines:{},settings:{fx:90,hours:160},quote:null},d);}
 $('fileIn').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const d=JSON.parse(rd.result);if(d.requirements){if((DB.requirements.length||DB.vendors.length)&&!confirm('Replace current data with the imported file?'))return;DB=mergeShape(d);sel=null;persist();renderAll();tab('req');toast('Imported');}else toast('Not a workspace file');}catch{toast('Could not read file');}};rd.readAsText(f);e.target.value='';});
 function csvCell(v){v=(v==null?'':''+v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
 function dl(name,content,type){const b=new Blob([content],{type}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
@@ -756,13 +1062,14 @@ const GH_FILE='data.json';
 const GH_KEY='ns_gh_token_v1';
 const GH_API=`https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
 const ghToken=()=>localStorage.getItem(GH_KEY)||'';
-function openSettings(){$('set_fx').value=fx();$('set_ghtoken').value=ghToken();open_('settingsScrim');}
+function openSettings(){$('set_fx').value=fx();$('set_hours').value=hrs();$('set_ghtoken').value=ghToken();open_('settingsScrim');}
 function saveSettings(){
   DB.settings.fx=+val('set_fx')||90;
+  DB.settings.hours=+val('set_hours')||160;
   const tok=($('set_ghtoken').value||'').trim();
   if(tok)localStorage.setItem(GH_KEY,tok);
   else localStorage.removeItem(GH_KEY);
-  persist();close_('settingsScrim');renderRate();renderCTC();renderQuote();
+  persist();close_('settingsScrim');renderRate();renderCTC();renderQuote();renderPB&&renderPB();renderHB&&renderHB();
   toast('Settings saved'+(tok?' — token stored':''));
 }
 function setFx(v){DB.settings.fx=+v||90;persist();renderCTC();}
@@ -843,9 +1150,10 @@ function renderCTC(){
   if(!val('ct_level'))syncCtcLevels();
   $('vendorList2')&&($('vendorList2').innerHTML=uniq(DB.vendors.map(v=>v.name)).map(v=>`<option value="${esc(v)}">`).join(''));
   const obs=DB.ctc||[];$('ctCount').textContent=obs.length+' observations';
+  const cur=inrLabel();
   // by position
   const byPos={};obs.forEach(o=>{const k=o.role+'||'+o.level;(byPos[k]=byPos[k]||[]).push(o);});
-  let ph=`<thead><tr><th>Role</th><th>Level</th><th class="num">n</th><th class="num">Avg cost</th><th class="num">Min</th><th class="num">Max</th><th class="num">Model</th><th class="num">Baseline</th><th></th></tr></thead><tbody>`;
+  let ph=`<thead><tr><th>Role</th><th>Level</th><th class="num">n</th><th class="num">Avg cost (${cur}/mo)</th><th class="num">Min</th><th class="num">Max</th><th class="num">Model</th><th class="num">Baseline</th><th></th></tr></thead><tbody>`;
   const keys=Object.keys(byPos).sort();
   if(!keys.length)ph+=`<tr><td colspan="9"><div class="empty"><b>No observations yet</b>Add vendor CTCs above to build position baselines.</div></td></tr>`;
   keys.forEach(k=>{const[role,lv]=k.split('||');const arr=byPos[k];const us=arr.map(o=>ctcToUsdMo(o.amt,o.cur));
@@ -864,7 +1172,7 @@ function renderCTC(){
   vk.forEach(v=>{const a=byVen[v];vh+=`<tr><td>${esc(v)}</td><td class="num">${a.length}</td><td class="num">${usd(a.reduce((x,y)=>x+y,0)/a.length)}</td></tr>`;});
   $('ctVendorTable').innerHTML=vh+'</tbody>';
   // raw
-  let rh=`<thead><tr><th>Role</th><th>Level</th><th>Vendor</th><th class="num">Amount</th><th>Unit</th><th class="num">USD /mo</th><th>Date</th><th></th></tr></thead><tbody>`;
+  let rh=`<thead><tr><th>Role</th><th>Level</th><th>Vendor</th><th class="num">Amount</th><th>Unit</th><th class="num">${cur} /mo</th><th>Date</th><th></th></tr></thead><tbody>`;
   if(!obs.length)rh+=`<tr><td colspan="8" class="hint">No observations.</td></tr>`;
   obs.slice().reverse().forEach(o=>{rh+=`<tr><td>${esc(o.role)}</td><td>${esc(o.level)}</td><td>${esc(o.vendor||'\u2014')}</td><td class="num">${o.amt}</td><td>${esc(unitLabel(o.cur))}</td><td class="num">${usd(ctcToUsdMo(o.amt,o.cur))}</td><td class="hint">${esc(o.date||'')}</td><td><button class="btn soft sm" onclick="delCtc('${o.id}')">\u00d7</button></td></tr>`;});
   $('ctRawTable').innerHTML=rh+'</tbody>';
@@ -875,7 +1183,7 @@ function exportCtc(){if(!(DB.ctc||[]).length){toast('No observations');return;}
   const rows=DB.ctc.map(o=>[o.role,o.level,o.vendor,o.amt,o.cur,Math.round(ctcToUsdMo(o.amt,o.cur)),o.date]);
   dl('ctc-observations.csv',[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n'),'text/csv');toast('Exported');}
 
-function renderAll(){renderRate();renderCTC();renderReq();renderQuote();renderVendors();renderPrompts();}
+function renderAll(){renderRate();renderCTC();renderReq();renderQuote();renderVendors();renderPrompts();renderPB();renderHB();}
 
 /* ===== init ===== */
 $('ct_role')&&$('ct_role').addEventListener('change',syncCtcLevels);
